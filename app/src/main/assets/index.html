@@ -235,6 +235,55 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 .thumb button { position: absolute; top: 4px; left: 4px; width: 26px; height: 26px; padding: 0; line-height: 1; background: var(--surface); border: 0; }
 #editText { min-height: 60vh; }
 
+/* ---- cooking mode ---- */
+.cook-go { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.cook-go svg { width: 22px; height: 22px; }
+#v-cook { font-size: 1.07em; }
+.ck-head { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 6px 0 10px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px dashed var(--line); }
+.ck-head h2 { font-size: 1.35em; }
+.ck-progress { display: flex; align-items: center; gap: 10px; font-size: .85em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ck-bar { flex: 1; height: 10px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
+.ck-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transition: width .45s cubic-bezier(.2,.8,.2,1); }
+.ck-factor { align-self: flex-start; font-size: .8em; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 1px 10px; font-weight: 600; }
+.ck-sec { display: flex; flex-direction: column; gap: 8px; }
+.ck-sec h3 { font-size: 1.05em; color: var(--accent); }
+.ck-sec h3 small { color: var(--muted); font-weight: 400; font-size: .8em; }
+.ck-ing { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 6px 10px; box-shadow: var(--shadow); }
+.ck-group { font-family: var(--font-display); color: var(--muted); font-size: .85em; padding: 8px 6px 2px; }
+.ck-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 6px; border-bottom: 1px dashed var(--line); cursor: pointer; user-select: none; }
+.ck-row:last-child { border-bottom: 0; }
+.ck-box { flex: none; width: 24px; height: 24px; margin-top: 2px; border-radius: 8px; border: 2px solid var(--accent); display: grid; place-items: center; transition: background .2s, transform .2s; }
+.ck-box svg { width: 16px; height: 16px; color: var(--accent-ink); opacity: 0; transform: scale(.4); transition: opacity .2s, transform .25s cubic-bezier(.3,1.6,.5,1); }
+.ck-row.on .ck-box, .ck-step.on .ck-num { background: var(--accent); }
+.ck-row.on .ck-box svg { opacity: 1; transform: none; }
+.ck-row.on .ck-txt { text-decoration: line-through; text-decoration-color: var(--accent); color: var(--muted); }
+.ck-txt { min-width: 0; transition: color .2s; }
+.ck-txt .sc { background: var(--accent-soft); color: var(--accent); font-weight: 700; border-radius: 6px; padding: 0 4px; }
+.ck-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ck-step { position: relative; display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1.5px solid var(--line); border-radius: 18px; padding: 14px; cursor: pointer; user-select: none; box-shadow: var(--shadow); transition: transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s, border-color .3s; }
+.ck-num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; background: var(--accent-soft); color: var(--accent); transition: background .25s; }
+.ck-step.on .ck-num { color: var(--accent-ink); }
+.ck-step.on { opacity: .55; transform: scale(.98); box-shadow: none; }
+.ck-step.on .ck-stxt { text-decoration: line-through; text-decoration-color: var(--accent); }
+.ck-step.now { border-color: var(--accent); transform: perspective(800px) translateZ(14px); box-shadow: 0 18px 30px -18px var(--accent); }
+.ck-step.now::before { content: "עכשיו"; position: absolute; top: -10px; left: 14px; background: var(--accent); color: var(--accent-ink); font-size: .72em; font-weight: 700; padding: 1px 10px; border-radius: 999px; }
+.ck-stxt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ck-group-step { font-family: var(--font-display); color: var(--muted); font-size: .85em; margin-top: 4px; }
+.timer { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 12px; font-size: .85em; background: var(--accent-soft); color: var(--accent); border: 0; font-variant-numeric: tabular-nums; }
+.timer svg { width: 16px; height: 16px; }
+.timer.run { background: var(--accent); color: var(--accent-ink); }
+.timer.done { background: var(--accent-2); color: #3B2530; animation: ring .5s ease-in-out 6; }
+@keyframes ring { 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+.ck-done { position: relative; overflow: hidden; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--surface); border: 2px solid var(--accent); border-radius: 22px; padding: 22px 16px; box-shadow: var(--shadow); }
+.ck-done strong { font-family: var(--font-brand); font-size: 2.6em; color: var(--accent); line-height: 1; }
+.confetti { position: absolute; inset: 0; pointer-events: none; }
+.confetti i { position: absolute; top: -10px; width: 8px; height: 14px; border-radius: 2px; background: var(--accent); animation: fall 2.4s ease-in forwards; }
+.confetti i:nth-child(2n) { background: var(--accent-2); width: 10px; height: 10px; border-radius: 50%; }
+.confetti i:nth-child(1) { left: 8%; animation-delay: 0s; } .confetti i:nth-child(2) { left: 18%; animation-delay: .2s; } .confetti i:nth-child(3) { left: 28%; animation-delay: .1s; }
+.confetti i:nth-child(4) { left: 38%; animation-delay: .35s; } .confetti i:nth-child(5) { left: 48%; animation-delay: .05s; } .confetti i:nth-child(6) { left: 58%; animation-delay: .25s; }
+.confetti i:nth-child(7) { left: 68%; animation-delay: .15s; } .confetti i:nth-child(8) { left: 78%; animation-delay: .4s; } .confetti i:nth-child(9) { left: 88%; animation-delay: .1s; } .confetti i:nth-child(10) { left: 94%; animation-delay: .3s; }
+@keyframes fall { to { transform: translateY(240px) rotate(540deg); opacity: 0; } }
+
 /* ---- compare ---- */
 .cmp { display: flex; flex-direction: column; gap: 14px; }
 .cmp-photo { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 5; background: var(--desk); border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
@@ -372,6 +421,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
         <span class="sb-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><path d="M5 4v5M3 4v3a2 2 0 0 0 4 0V4M19 4c-2 1-2 4-2 6h2V4z"/></svg>מנות</span>
         <div class="stepper"><button type="button" id="servMinus" aria-label="פחות מנות">−</button><output id="servVal"></output><button type="button" id="servPlus" aria-label="יותר מנות">+</button></div>
       </div>
+      <button type="button" class="primary cook-go" id="btnCook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="4"/></svg>מצב הכנה</button>
       <div class="sb-note" id="scaleNote" hidden><span id="scaleNoteText"></span><button type="button" class="ghost" id="scaleReset">איפוס</button></div>
     </div>
     <section class="notes">
@@ -425,6 +475,31 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     <textarea id="editText" spellcheck="true" aria-label="טקסט המתכון"></textarea>
     <div class="recipe" id="editPreview" hidden></div>
     <p class="hint">כותרת עם # בשורה הראשונה, ## לסעיפים, - למצרכים, 1. לשלבים.</p>
+  </section>
+
+  <!-- ============ COOK ============ -->
+  <section class="view" id="v-cook" hidden>
+    <div class="ck-head">
+      <h2 id="ckTitle"></h2>
+      <div class="ck-progress" aria-live="polite"><div class="ck-bar"><i id="ckBar"></i></div><span id="ckProg"></span></div>
+      <span class="ck-factor" id="ckFactor" hidden></span>
+    </div>
+    <div class="ck-sec">
+      <h3>מצרכים <small id="ckIngCount"></small></h3>
+      <div class="ck-ing" id="ckIng"></div>
+    </div>
+    <div class="ck-sec">
+      <h3>שלבי ההכנה</h3>
+      <ol class="ck-steps" id="ckSteps"></ol>
+    </div>
+    <div class="ck-done" id="ckDone" hidden>
+      <div class="confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <strong>בתיאבון!</strong>
+      <span>כל השלבים הושלמו.</span>
+      <button type="button" class="primary" id="ckNote">הוספת הערה למתכון</button>
+    </div>
+    <p class="hint" id="ckEmpty" hidden>לא זיהיתי במתכון הזה רשימת מצרכים ושלבים. מצב הכנה עובד עם מתכון בתבנית (## מצרכים עם רשימה, ## אופן ההכנה עם שלבים ממוספרים). אפשר לסדר אותו דרך עריכה או "שינוי עם ג'ימיני".</p>
+    <div class="row" style="justify-content:center"><button type="button" class="ghost" id="ckReset">התחלה מחדש</button></div>
   </section>
 
   <!-- ============ COMPARE ============ -->
@@ -677,7 +752,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     </div>
   </details>
   
-    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.3</p>
+    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.4</p>
   </section>
 </div>
 
@@ -970,6 +1045,7 @@ const ICON = {
   undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7H9a5 5 0 0 0 0 10h6"/><path d="M12 4l3 3-3 3"/></svg>',
   trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
   gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12l2 2 4-4"/></svg>',
   compare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="16" rx="2"/><path d="M15 6h6M15 10h6M15 14h6M15 18h4"/></svg>',
   spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>',
   box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg>'
@@ -1101,7 +1177,7 @@ blockquote{margin:0 0 12px;color:#8C6F7B}ul li::marker{color:#F0A35E}ol li::mark
 }
 
 /* ---------------- router ---------------- */
-const VIEWS = ["book", "recipe", "add", "edit", "settings", "compare"];
+const VIEWS = ["book", "recipe", "add", "edit", "settings", "compare", "cook"];
 let stack = ["book"];
 function show(v, dir) {
   VIEWS.forEach(n => $("v-" + n).hidden = n !== v);
@@ -1112,7 +1188,7 @@ function show(v, dir) {
   $("tbMenu").hidden = !home; $("tbBack").hidden = home;
   $("tbDots").hidden = v !== "recipe";
   $("fab").hidden = !home;
-  $("tbTitle").textContent = { book: "", recipe: "", add: "מתכון חדש", edit: editId ? "עריכת מתכון" : "מתכון חדש", settings: "הגדרות", compare: "בדיקה מול המקור" }[v];
+  $("tbTitle").textContent = { book: "", recipe: "", add: "מתכון חדש", edit: editId ? "עריכת מתכון" : "מתכון חדש", settings: "הגדרות", compare: "בדיקה מול המקור", cook: "מצב הכנה" }[v];
   window.scrollTo(0, 0);
   if (v === "book") renderBook();
 }
@@ -1122,6 +1198,7 @@ function back() {
   const from = stack.pop();
   if (from === "recipe") factor = 1;
   if (from === "compare") saveCompare(true);
+  if (from === "cook") leaveCook();
   const to = stack[stack.length - 1];
   if (to === "recipe") renderRecipe();
   show(to, "back");
@@ -1153,6 +1230,7 @@ function menuSheet(title, items) {
 function recipeMenu(id) {
   const it = byId(id); if (!it) return;
   const items = [
+    { icon: "check", label: "מצב הכנה", sub: "צ'ק ליסט של מצרכים ושלבים, עם טיימרים", run: () => { if (curId !== id || stack[stack.length - 1] !== "recipe") { curId = id; factor = 1; renderRecipe(); stack.push("recipe"); } openCook(); } },
     { icon: "compare", label: "השוואה למקור", sub: "הצילום לצד הטקסט, עם עריכה", run: () => { if (curId !== id || stack[stack.length - 1] !== "recipe") { curId = id; factor = 1; renderRecipe(); stack.push("recipe"); } openCompareView(false); } },
     { icon: "edit", label: "עריכה ידנית", run: () => openEdit(id) },
     { icon: "magic", label: "שינוי עם ג'ימיני", sub: "הכפלה קבועה, גרסה פרווה, קיצור...", run: () => refineSheet(id) },
@@ -1256,7 +1334,7 @@ function renderRecipe() {
   if (base) $("servVal").textContent = fmtNum(base * factor) + " מנות";
   document.querySelectorAll("#mulSeg button").forEach(b => b.setAttribute("aria-pressed", Math.abs(+b.dataset.f - factor) < 1e-9));
   $("scaleNote").hidden = factor === 1;
-  $("scaleNoteText").textContent = "הכמויות מוצגות לפי ×" + fmtNum(factor) + (base ? " (" + fmtNum(base * factor) + " מנות)" : "") + ". זמני, המתכון השמור לא משתנה.";
+  $("scaleNoteText").textContent = "הכמויות מוצגות פי " + fmtNum(factor) + (base ? " (" + fmtNum(base * factor) + " מנות)" : "") + ". זמני, המתכון השמור לא משתנה.";
 }
 function setFactor(f) { factor = Math.max(0.1, Math.round(f * 1000) / 1000); renderRecipe(); }
 
@@ -1402,6 +1480,153 @@ async function redoFromSource() {
   saveBook(); renderRecipe(); setCmpMode("text"); toast("המתכון נוסח מחדש מהתמלול המתוקן");
 }
 
+/* ---------------- cooking mode ---------------- */
+const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+const CLOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>';
+let cook = null;   // { ing: [...], steps: [...], st: { i: [], s: [] } }
+const timers = {};
+function cookState(id) { return (LS.get("mt.cook", {})[id]) || { i: [], s: [] }; }
+function saveCookState() { const all = LS.get("mt.cook", {}); all[curId] = cook.st; LS.set("mt.cook", all); }
+function cookModel(it) {
+  const div = document.createElement("div");
+  div.innerHTML = mdToHtml(scaleSource(it.text, factor), S.outputStyle);
+  const ing = [], steps = [];
+  let sec = null, group = "";
+  const isIng = (t) => /מצרכ|רכיב|ingredient/i.test(t);
+  const isPrep = (t) => /הכנה|הוראות|שלבי|preparation|instructions|method|directions/i.test(t);
+  for (const el of div.children) {
+    const tag = el.tagName, t = el.textContent.trim();
+    if (tag === "H2") { sec = isIng(t) ? "ing" : isPrep(t) ? "prep" : "other"; group = ""; continue; }
+    if (tag === "H3") { group = t; continue; }
+    if (tag === "P" && t.length < 30) { if (isIng(t)) { sec = "ing"; group = ""; continue; } if (isPrep(t)) { sec = "prep"; group = ""; continue; } }
+    if (tag === "UL" || tag === "OL") {
+      const target = sec === "ing" ? ing : sec === "prep" ? steps : sec === null ? (tag === "OL" ? steps : ing) : null;
+      if (target) [...el.children].forEach(li => target.push({ html: li.innerHTML, text: li.textContent, group }));
+    }
+  }
+  return { ing, steps };
+}
+function stepMinutes(text) {
+  let m;
+  if ((m = text.match(/(\d+(?:[.,]\d+)?)\s*(?:(?:עד|-|–)\s*\d+(?:[.,]\d+)?\s*)?(?:דקות|דק['׳]?|דקה|minutes?|mins?)/i))) return parseFloat(m[1].replace(",", "."));
+  if ((m = text.match(/(\d+(?:[.,]\d+)?)\s*(?:(?:עד|-|–)\s*\d+\s*)?(?:שעות|שעה|hours?)(\s*וחצי)?/i))) return (parseFloat(m[1].replace(",", ".")) + (m[2] ? .5 : 0)) * 60;
+  if (/שעתיים וחצי/.test(text)) return 150;
+  if (/שעה וחצי/.test(text)) return 90;
+  if (/חצי שעה/.test(text)) return 30;
+  if (/רבע שעה/.test(text)) return 15;
+  if (/שעתיים/.test(text)) return 120;
+  if (/\bשעה\b|(^|\s)שעה($|[\s.,])/.test(text)) return 60;
+  return 0;
+}
+function openCook() {
+  const it = byId(curId); if (!it) return;
+  cook = cookModel(it);
+  cook.st = cookState(curId);
+  $("ckTitle").textContent = it.title;
+  $("ckFactor").hidden = factor === 1;
+  $("ckFactor").textContent = "הכמויות פי " + fmtNum(factor);
+  renderCook();
+  stack.push("cook"); show("cook", "fwd");
+  cookAwake = true; applyAwake();
+  setTimeout(() => { const n = document.querySelector(".ck-step.now"); if (n && cook.st.s.length) n.scrollIntoView({ block: "center", behavior: "smooth" }); }, 600);
+}
+function leaveCook() {
+  Object.keys(timers).forEach(k => { clearInterval(timers[k].int); delete timers[k]; });
+  cookAwake = false; applyAwake();
+}
+function renderCook() {
+  const ingBox = $("ckIng"), stepBox = $("ckSteps");
+  ingBox.innerHTML = ""; stepBox.innerHTML = "";
+  let g = null;
+  cook.ing.forEach((x, i) => {
+    if (x.group && x.group !== g) { g = x.group; ingBox.insertAdjacentHTML("beforeend", '<div class="ck-group">' + esc(g) + "</div>"); }
+    const r = document.createElement("div");
+    r.className = "ck-row" + (cook.st.i.includes(i) ? " on" : "");
+    r.setAttribute("role", "checkbox"); r.tabIndex = 0;
+    r.innerHTML = '<span class="ck-box">' + CHECK_SVG + '</span><span class="ck-txt">' + x.html + "</span>";
+    const tog = () => { toggleIdx(cook.st.i, i); r.classList.toggle("on"); r.setAttribute("aria-checked", r.classList.contains("on")); updateCookProgress(); };
+    r.setAttribute("aria-checked", cook.st.i.includes(i));
+    r.onclick = tog; r.onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); tog(); } };
+    ingBox.appendChild(r);
+  });
+  g = null;
+  cook.steps.forEach((x, i) => {
+    const li = document.createElement("li");
+    li.className = "ck-step" + (cook.st.s.includes(i) ? " on" : "");
+    li.dataset.i = i; li.tabIndex = 0; li.setAttribute("role", "checkbox");
+    const mins = stepMinutes(x.text);
+    li.innerHTML = '<span class="ck-num">' + (i + 1) + '</span><div class="ck-stxt">' +
+      (x.group && x.group !== g ? '<span class="ck-group-step">' + esc(x.group) + "</span>" : "") + "<span>" + x.html + "</span>" +
+      (mins ? '<button type="button" class="timer" data-min="' + mins + '">' + CLOCK_SVG + "<span>טיימר " + fmtNum(mins) + " דק'</span></button>" : "") + "</div>";
+    g = x.group || g;
+    const tog = () => {
+      toggleIdx(cook.st.s, i);
+      li.classList.toggle("on");
+      li.querySelector(".ck-num").innerHTML = li.classList.contains("on") ? CHECK_SVG : String(i + 1);
+      updateCookProgress(true);
+    };
+    if (cook.st.s.includes(i)) li.querySelector(".ck-num").innerHTML = CHECK_SVG;
+    li.onclick = (e) => { if (e.target.closest(".timer")) return; tog(); };
+    li.onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); tog(); } };
+    const tb = li.querySelector(".timer");
+    if (tb) tb.onclick = () => toggleTimer(curId + ":" + i, mins, tb);
+    stepBox.appendChild(li);
+  });
+  $("ckEmpty").hidden = !!(cook.ing.length || cook.steps.length);
+  updateCookProgress();
+}
+function toggleIdx(arr, i) { const k = arr.indexOf(i); if (k >= 0) arr.splice(k, 1); else arr.push(i); saveCookState(); }
+function updateCookProgress(scroll) {
+  const nI = cook.ing.length, nS = cook.steps.length;
+  const dI = cook.st.i.length, dS = cook.st.s.length;
+  const total = nI + nS, done = dI + dS;
+  $("ckBar").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+  $("ckProg").textContent = nS ? dS + " מתוך " + nS + " שלבים" : "";
+  $("ckIngCount").textContent = nI ? "(" + dI + "/" + nI + ")" : "";
+  let nowEl = null;
+  document.querySelectorAll(".ck-step").forEach(li => {
+    const isNow = !nowEl && !li.classList.contains("on");
+    li.classList.toggle("now", isNow);
+    if (isNow) nowEl = li;
+  });
+  const finished = nS > 0 && dS === nS;
+  const wasHidden = $("ckDone").hidden;
+  $("ckDone").hidden = !finished;
+  if (finished && wasHidden) { const d = $("ckDone"); d.querySelectorAll(".confetti i").forEach(i => { i.style.animation = "none"; void i.offsetWidth; i.style.animation = ""; }); setTimeout(() => d.scrollIntoView({ block: "center", behavior: "smooth" }), 250); }
+  else if (scroll && nowEl) setTimeout(() => nowEl.scrollIntoView({ block: "center", behavior: "smooth" }), 250);
+}
+function toggleTimer(key, mins, btn) {
+  const label = btn.querySelector("span");
+  if (timers[key]) { clearInterval(timers[key].int); delete timers[key]; btn.classList.remove("run", "done"); label.textContent = "טיימר " + fmtNum(mins) + " דק'"; return; }
+  const end = Date.now() + mins * 60000;
+  btn.classList.remove("done"); btn.classList.add("run");
+  const tick = () => {
+    const left = Math.max(0, Math.round((end - Date.now()) / 1000));
+    label.textContent = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0") + " · עצירה";
+    if (left <= 0) {
+      clearInterval(timers[key].int); delete timers[key];
+      btn.classList.remove("run"); btn.classList.add("done"); label.textContent = "הזמן נגמר!";
+      ringAlarm();
+    }
+  };
+  timers[key] = { int: setInterval(tick, 1000) }; tick();
+}
+function ringAlarm() {
+  try { if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); } catch (e) {}
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; const ac = new AC();
+    [0, .4, .8, 1.6, 2, 2.4].forEach(t => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(.0001, ac.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.35, ac.currentTime + t + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + t + .3);
+      o.start(ac.currentTime + t); o.stop(ac.currentTime + t + .32);
+    });
+  } catch (e) {}
+  toast("⏰ הטיימר הסתיים");
+}
+
 /* ---------------- edit ---------------- */
 function openEdit(id) {
   editId = id || null;
@@ -1466,8 +1691,9 @@ function exportAs(text, fmt) {
 
 /* ---------------- keep screen on ---------------- */
 let wakeLock = null;
+let cookAwake = false;   // cooking mode keeps the screen on even if the toggle is off
 async function applyAwake() {
-  const on = !!S.keepAwake;
+  const on = !!S.keepAwake || cookAwake;
   $("awake").setAttribute("aria-pressed", on);
   if (Native && Native.keepAwake) { try { Native.keepAwake(on); } catch (e) {} return; }
   try {
@@ -1551,7 +1777,7 @@ function init() {
   $("tbBack").onclick = () => back();
   $("tbDots").onclick = () => curId && recipeMenu(curId);
   $("scrim").onclick = closeSheet;
-  $("awake").onclick = () => { S.keepAwake = !S.keepAwake; saveSettings(); applyAwake(); toast(S.keepAwake ? "המסך יישאר דלוק" : "המסך יכבה כרגיל"); };
+  $("awake").onclick = () => { if (cookAwake && !S.keepAwake) { cookAwake = false; applyAwake(); toast("המסך יכבה כרגיל"); return; } S.keepAwake = !S.keepAwake; saveSettings(); applyAwake(); toast(S.keepAwake ? "המסך יישאר דלוק" : "המסך יכבה כרגיל"); };
   $("fab").onclick = openAdd;
   $("bookSearch").oninput = renderBook;
 
@@ -1572,6 +1798,9 @@ function init() {
   $("cmpSegSrc").onclick = () => { saveCompare(true); setCmpMode("src"); };
   $("cmpSave").onclick = () => { saveCompare(false); back(); };
   $("cmpRedo").onclick = redoFromSource;
+  $("btnCook").onclick = openCook;
+  $("ckReset").onclick = () => { cook.st = { i: [], s: [] }; saveCookState(); renderCook(); window.scrollTo({ top: 0, behavior: "smooth" }); toast("מתחילים מחדש"); };
+  $("ckNote").onclick = () => { back(); setTimeout(() => { $("rNotes").focus(); $("rNotes").scrollIntoView({ block: "center", behavior: "smooth" }); }, 400); };
   $("fileInput").onchange = async (e) => { await addFiles([...e.target.files]); e.target.value = ""; };
   $("btnPasteText").onclick = () => { $("srcTextWrap").hidden = false; $("srcText").focus(); };
   $("btnManual").onclick = () => openEdit(null);
