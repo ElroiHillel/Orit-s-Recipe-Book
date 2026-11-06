@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     # 24.04 ships with the Android SDK preinstalled (ANDROID_HOME)
@@ -19,7 +22,6 @@ jobs:
 
       - name: Android SDK licenses
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
           SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           yes | "$SDKM" --licenses > /dev/null || true
           "$SDKM" "platforms;android-34" "build-tools;34.0.0" > /dev/null
@@ -32,9 +34,22 @@ jobs:
         run: gradle --no-daemon assembleRelease
 
       - name: Rename
-        run: cp app/build/outputs/apk/release/app-release.apk matkonit.apk
+        run: cp app/build/outputs/apk/release/app-release.apk orit-recipes.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: matkonit-apk
-          path: matkonit.apk
+          name: orit-recipes-apk
+          path: orit-recipes.apk
+
+      # A release per build gives a permanent direct link:
+      # https://github.com/<owner>/<repo>/releases/latest/download/orit-recipes.apk
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(grep -oP "versionName '\K[^']+" app/build.gradle)
+          TAG="v${VER}-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" orit-recipes.apk \
+            --title "ספר המתכונים של אורית ${VER}" \
+            --notes "גרסה ${VER} (בנייה ${GITHUB_RUN_NUMBER}). מורידים את orit-recipes.apk ומתקינים כעדכון." \
+            --latest

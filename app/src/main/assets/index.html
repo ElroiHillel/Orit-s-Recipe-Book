@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>המתכונים של אורית</title>
+<title>ספר המתכונים של אורית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Fredoka:wght@400;500;600&family=Varela+Round&display=swap">
 <style>
@@ -224,7 +224,7 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 
 /* ---- add / edit ---- */
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-shadow: var(--shadow); }
-.big-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.big-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .big-actions button { border-radius: 18px; padding: 16px 6px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--accent-soft); border: 1.5px dashed var(--accent); font-family: var(--font-display); font-weight: 500; font-size: .9em; }
 .big-actions button span.i { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--surface); color: var(--accent); }
 .big-actions svg { width: 22px; height: 22px; }
@@ -234,6 +234,26 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb button { position: absolute; top: 4px; left: 4px; width: 26px; height: 26px; padding: 0; line-height: 1; background: var(--surface); border: 0; }
 #editText { min-height: 60vh; }
+
+/* ---- compare ---- */
+.cmp { display: flex; flex-direction: column; gap: 14px; }
+.cmp-photo { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 5; background: var(--desk); border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+.cmp-imgs { --zoom: 1; height: 40vh; overflow: auto; display: flex; flex-direction: column; gap: 6px; padding: 6px; direction: ltr; -webkit-overflow-scrolling: touch; }
+.cmp-imgs img { width: calc(var(--zoom) * 100%); max-width: none; flex: none; border-radius: 10px; display: block; }
+.cmp-empty { direction: rtl; color: var(--muted); padding: 10px; font-size: .9em; }
+.cmp-empty pre { white-space: pre-wrap; font-family: var(--font-body); color: var(--ink); }
+.cmp-zoom { position: absolute; bottom: 8px; left: 8px; display: flex; align-items: center; gap: 2px; background: var(--surface); border-radius: 999px; box-shadow: var(--shadow); padding: 2px; }
+.cmp-zoom .icon-btn { width: 34px; height: 34px; font-size: 1.2em; font-weight: 700; }
+.cmp-zoom output { min-width: 46px; text-align: center; font-size: .8em; font-variant-numeric: tabular-nums; }
+.cmp-edit { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+#cmpText { min-height: 45vh; font-size: .95em; }
+@media (min-width: 720px) {
+  .cmp { flex-direction: row; align-items: flex-start; }
+  .cmp-photo { flex: 1 1 50%; }
+  .cmp-imgs { height: calc(100vh - 110px); }
+  .cmp-edit { flex: 1 1 50%; }
+  #cmpText { min-height: calc(100vh - 220px); }
+}
 
 /* ---- settings ---- */
 details.sect { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
@@ -319,7 +339,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     <header class="hero">
       <div class="hero-text">
         <span class="greet" id="greet">שלום אורית</span>
-        <h1 class="brand">המתכונים של <span>אורית</span></h1>
+        <h1 class="brand">ספר המתכונים של <span>אורית</span></h1>
         <span class="count" id="bookCount"></span>
       </div>
       <svg class="hero-art" viewBox="0 0 96 96" aria-hidden="true">
@@ -365,11 +385,14 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
   <section class="view" id="v-add" hidden>
     <div class="panel">
       <div class="big-actions">
-        <button id="btnPickImg" type="button"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg></span>תמונה או צילום</button>
+        <button id="btnCamera" type="button"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></span>צילום</button>
+        <button id="btnPickImg" type="button"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></span>מהגלריה</button>
         <button id="btnPasteText" type="button"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg></span>הדבקת טקסט</button>
         <button id="btnManual" type="button"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>כתיבה ידנית</button>
       </div>
       <input type="file" id="fileInput" accept="image/*" multiple hidden>
+      <input type="file" id="camInput" accept="image/*" capture="environment" hidden>
+      <p class="hint" style="margin:0">מתכון על כמה עמודים? מצלמים או בוחרים כמה תמונות, והן יחוברו למתכון אחד. צילום ישר מלמעלה ובאור טוב משפר מאוד את הדיוק.</p>
       <div class="thumbs" id="thumbs"></div>
       <label class="fld" id="srcTextWrap" hidden>טקסט המתכון
         <textarea id="srcText" rows="6" placeholder="הדביקי כאן את המתכון"></textarea>
@@ -402,6 +425,29 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     <textarea id="editText" spellcheck="true" aria-label="טקסט המתכון"></textarea>
     <div class="recipe" id="editPreview" hidden></div>
     <p class="hint">כותרת עם # בשורה הראשונה, ## לסעיפים, - למצרכים, 1. לשלבים.</p>
+  </section>
+
+  <!-- ============ COMPARE ============ -->
+  <section class="view" id="v-compare" hidden>
+    <div class="cmp">
+      <div class="cmp-photo">
+        <div class="cmp-imgs" id="cmpImgs"></div>
+        <div class="cmp-zoom"><button type="button" class="icon-btn" id="cmpZoomOut" aria-label="הקטנה">−</button><output id="cmpZoomVal">100%</output><button type="button" class="icon-btn" id="cmpZoomIn" aria-label="הגדלה">+</button></div>
+      </div>
+      <div class="cmp-edit">
+        <div class="row" style="justify-content:space-between">
+          <div class="seg" role="group" aria-label="מה עורכים">
+            <button type="button" id="cmpSegText" aria-pressed="true">המתכון</button>
+            <button type="button" id="cmpSegSrc" aria-pressed="false">התמלול</button>
+          </div>
+          <button type="button" class="primary" id="cmpSave">שמירה</button>
+        </div>
+        <p class="hint" id="cmpHint" style="margin:0"></p>
+        <textarea id="cmpText" spellcheck="true" aria-label="טקסט לעריכה"></textarea>
+        <div class="row"><button type="button" id="cmpRedo" hidden>ניסוח מחדש מהתמלול</button></div>
+        <div class="status" id="cmpStatus"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ SETTINGS ============ -->
@@ -447,6 +493,8 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
           <option value="en">אנגלית</option>
         </select>
       </label>
+      <div class="toggle"><span>תמלול מדויק לפני הניסוח (שני שלבים, מומלץ לצילומים)</span><input type="checkbox" data-key="twoStage" id="s_twoStage"></div>
+      <div class="toggle"><span>פתיחת מסך בדיקה מול המקור אחרי כל המרה</span><input type="checkbox" data-key="openCompare" id="s_openCompare"></div>
       <label class="fld">כמה להיצמד למקור
         <select id="s_fidelity" data-key="fidelity">
           <option value="strict">נאמן למקור, רק סידור לתבנית</option>
@@ -629,7 +677,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     </div>
   </details>
   
-    <p class="hint" style="text-align:center">המתכונים של אורית 1.2</p>
+    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.3</p>
   </section>
 </div>
 
@@ -666,9 +714,9 @@ const DEFAULT_CHIPS = `להכפיל את הכמויות
 
 const DEFAULTS = {
   apiKey: "", model: "gemini-3.8-flash",
-  temperature: 0.3, topP: 0.95, maxTokens: 8192, thinking: "default", timeoutSec: 120,
-  imageMaxPx: 1800, imageQuality: 0.85,
-  lang: "he", fidelity: "balanced", units: "keep", tempUnit: "c", scaleTo: "", missing: "omit",
+  temperature: 0.2, topP: 0.95, maxTokens: 8192, thinking: "default", timeoutSec: 120,
+  imageMaxPx: 2400, imageQuality: 0.9,
+  lang: "he", fidelity: "strict", units: "keep", tempUnit: "c", scaleTo: "", missing: "omit",
   numberSteps: true, groupIngredients: true, includeTimes: true, includeServings: true, difficulty: false,
   includeTags: false, nutrition: false, tips: true, addTips: false, markUnclear: true, sourceLine: true,
   emoji: false, boldInSteps: false,
@@ -676,7 +724,7 @@ const DEFAULTS = {
   customPromptOn: false, customPrompt: "",
   exportFormat: "txt", fileNamePattern: "{title}", autoSave: true, autoRunShare: true, sharePlain: false,
   theme: "system", palette: "rose", fontSize: 16, editorDefault: "preview",
-  fallbackModel: "gemini-3.5-flash-lite", retries: "2", modelList: [], keepAwake: false
+  fallbackModel: "gemini-3.5-flash-lite", retries: "2", modelList: [], keepAwake: false, twoStage: true, openCompare: true, v: 3
 };
 
 const SAMPLE = `# שקשוקה ביתית
@@ -731,7 +779,7 @@ function buildSystemPrompt() {
   r.push(S.emoji ? "הוסף אימוג'י אחד מתאים לפני כל כותרת סעיף." : "אל תשתמש באימוג'ים.");
   if (S.boldInSteps) r.push("בשלבי ההכנה, הדגש את שמות המצרכים.");
   r.push({ markdown: "הפלט בפורמט Markdown: # לכותרת, ## לסעיפים, - לרשימות, ** להדגשה.", whatsapp: "הפלט מותאם לוואטסאפ: בלי סימני #. כותרות ושמות סעיפים מודגשים בכוכבית אחת משני הצדדים (*כך*), רשימות עם - ומספרים.", plain: "הפלט טקסט נקי בלבד: בלי #, בלי כוכביות ובלי סימוני עיצוב. כותרות סעיפים בשורה נפרדת, רשימות עם • ומספרים." }[S.outputStyle]);
-  r.push("אל תמציא מצרכים, כמויות או שלבים שלא מופיעים במקור (חוץ ממה שהתבקשת במפורש למעלה).");
+  r.push("אל תמציא מצרכים, כמויות, יחידות או שלבים שלא מופיעים במקור (חוץ ממה שהתבקשת במפורש למעלה). כל מספר וכל יחידה חייבים להיות זהים למקור. כשיש ספק, השאר את הנוסח המקורי וסמן [?].");
   r.push("אם בתמונה יש כמה מתכונים, סדר כל אחד בנפרד לפי התבנית, עם קו מפריד (---) ביניהם.");
   r.push("אם הקלט בכלל לא מתכון, החזר משפט אחד שמסביר מה חסר.");
   r.push("החזר רק את המתכון המעוצב. בלי הקדמה, בלי הסברים ובלי סיכום.");
@@ -752,14 +800,15 @@ function apiBase() { return "https://generativelanguage.googleapis.com/v1beta/";
 const KNOWN_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-4-argon"];
 const sleep = (ms, signal) => new Promise((ok, bad) => { const t = setTimeout(ok, ms); if (signal) signal.addEventListener("abort", () => { clearTimeout(t); bad(Object.assign(new Error("abort"), { name: "AbortError" })); }, { once: true }); });
 let onAttempt = null;  // UI hook: (model, attemptNo) => void
-async function gemini(contents, signal) {
+async function gemini(contents, signal, opt) {
+  opt = opt || {};
   if (!S.apiKey.trim()) throw new Error("NOKEY");
   const primary = modelName();
   const fb = (S.fallbackModel || "").trim().replace(/^models\//, "");
   const tries = Number(S.retries) || 0;
   let lastErr;
   for (let i = 0; i <= tries; i++) {
-    try { onAttempt && onAttempt(primary, i); return await geminiOnce(primary, contents, signal); }
+    try { onAttempt && onAttempt(primary, i); return await geminiOnce(primary, contents, signal, opt); }
     catch (e) {
       lastErr = e;
       if (e.name === "AbortError" || !e.retryable) throw e;
@@ -768,16 +817,17 @@ async function gemini(contents, signal) {
   }
   if (fb && fb !== primary) {
     onAttempt && onAttempt(fb, -1);
-    const r = await geminiOnce(fb, contents, signal);
+    const r = await geminiOnce(fb, contents, signal, opt);
     r.usedFallback = fb;
     return r;
   }
   throw lastErr;
 }
-async function geminiOnce(model, contents, signal) {
-  const gen = { temperature: Number(S.temperature), topP: Number(S.topP), maxOutputTokens: Number(S.maxTokens) };
+async function geminiOnce(model, contents, signal, opt) {
+  opt = opt || {};
+  const gen = { temperature: opt.temp != null ? opt.temp : Number(S.temperature), topP: Number(S.topP), maxOutputTokens: Number(S.maxTokens) };
   if (S.thinking !== "default") gen.thinkingConfig = { thinkingLevel: S.thinking };
-  const body = { systemInstruction: { parts: [{ text: buildSystemPrompt() }] }, contents, generationConfig: gen };
+  const body = { systemInstruction: { parts: [{ text: opt.sys || buildSystemPrompt() }] }, contents, generationConfig: gen };
   let res;
   try {
     res = await fetch(apiBase() + "models/" + encodeURIComponent(model) + ":generateContent", {
@@ -873,6 +923,10 @@ const LS = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
 let S = Object.assign({}, DEFAULTS, LS.get("mt.settings", {}));
+if ((S.v || 1) < 3) {   // accuracy-first defaults for people upgrading from 1.x
+  Object.assign(S, { fidelity: "strict", temperature: 0.2, imageMaxPx: Math.max(Number(S.imageMaxPx) || 0, 2400), imageQuality: Math.max(Number(S.imageQuality) || 0, 0.9), twoStage: true, openCompare: true, v: 3 });
+  LS.set("mt.settings", S);
+}
 let book = LS.get("mt.book", []);
 if (!LS.get("mt.seeded", false) && !book.length) {
   book = [{ id: "sample", title: "שקשוקה ביתית", text: SAMPLE, notes: "", sample: true, created: Date.now(), updated: Date.now() }];
@@ -916,8 +970,35 @@ const ICON = {
   undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7H9a5 5 0 0 0 0 10h6"/><path d="M12 4l3 3-3 3"/></svg>',
   trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
   gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  compare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="16" rx="2"/><path d="M15 6h6M15 10h6M15 14h6M15 18h4"/></svg>',
   spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>',
   box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg>'
+};
+
+/* ---------------- source photos (IndexedDB, too big for localStorage) ---------------- */
+const IDB = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((ok, bad) => {
+      try {
+        const r = indexedDB.open("orit-recipes", 1);
+        r.onupgradeneeded = () => r.result.createObjectStore("img");
+        r.onsuccess = () => { this.db = r.result; ok(this.db); };
+        r.onerror = () => bad(r.error);
+      } catch (e) { bad(e); }
+    });
+  },
+  tx(mode, fn) {   // never let storage hang the app: give up after 5s
+    return Promise.race([this._tx(mode, fn), new Promise((_, bad) => setTimeout(() => bad(new Error("idb timeout")), 5000))]);
+  },
+  async _tx(mode, fn) {
+    const db = await this.open();
+    return new Promise((ok, bad) => { const t = db.transaction("img", mode); const req = fn(t.objectStore("img")); t.oncomplete = () => ok(req && req.result); t.onerror = () => bad(t.error); });
+  },
+  put(k, v) { return this.tx("readwrite", st => st.put(v, k)).catch(() => false); },
+  get(k) { return this.tx("readonly", st => st.get(k)).catch(() => null); },
+  del(k) { return this.tx("readwrite", st => st.delete(k)).catch(() => false); }
 };
 
 /* ---------------- quantity scaling (temporary, display only) ---------------- */
@@ -1020,7 +1101,7 @@ blockquote{margin:0 0 12px;color:#8C6F7B}ul li::marker{color:#F0A35E}ol li::mark
 }
 
 /* ---------------- router ---------------- */
-const VIEWS = ["book", "recipe", "add", "edit", "settings"];
+const VIEWS = ["book", "recipe", "add", "edit", "settings", "compare"];
 let stack = ["book"];
 function show(v, dir) {
   VIEWS.forEach(n => $("v-" + n).hidden = n !== v);
@@ -1031,7 +1112,7 @@ function show(v, dir) {
   $("tbMenu").hidden = !home; $("tbBack").hidden = home;
   $("tbDots").hidden = v !== "recipe";
   $("fab").hidden = !home;
-  $("tbTitle").textContent = { book: "", recipe: "", add: "מתכון חדש", edit: editId ? "עריכת מתכון" : "מתכון חדש", settings: "הגדרות" }[v];
+  $("tbTitle").textContent = { book: "", recipe: "", add: "מתכון חדש", edit: editId ? "עריכת מתכון" : "מתכון חדש", settings: "הגדרות", compare: "בדיקה מול המקור" }[v];
   window.scrollTo(0, 0);
   if (v === "book") renderBook();
 }
@@ -1040,6 +1121,7 @@ function back() {
   if (stack.length <= 1) return false;
   const from = stack.pop();
   if (from === "recipe") factor = 1;
+  if (from === "compare") saveCompare(true);
   const to = stack[stack.length - 1];
   if (to === "recipe") renderRecipe();
   show(to, "back");
@@ -1071,6 +1153,7 @@ function menuSheet(title, items) {
 function recipeMenu(id) {
   const it = byId(id); if (!it) return;
   const items = [
+    { icon: "compare", label: "השוואה למקור", sub: "הצילום לצד הטקסט, עם עריכה", run: () => { if (curId !== id || stack[stack.length - 1] !== "recipe") { curId = id; factor = 1; renderRecipe(); stack.push("recipe"); } openCompareView(false); } },
     { icon: "edit", label: "עריכה ידנית", run: () => openEdit(id) },
     { icon: "magic", label: "שינוי עם ג'ימיני", sub: "הכפלה קבועה, גרסה פרווה, קיצור...", run: () => refineSheet(id) },
     "-",
@@ -1149,7 +1232,7 @@ function renderBook() {
   });
 }
 function deleteRecipe(id) {
-  book = book.filter(b => b.id !== id); saveBook();
+  book = book.filter(b => b.id !== id); saveBook(); IDB.del(id);
   if (curId === id) { curId = null; if (stack[stack.length - 1] === "recipe") back(); }
   renderBook(); toast("המתכון נמחק");
 }
@@ -1178,22 +1261,56 @@ function renderRecipe() {
 function setFactor(f) { factor = Math.max(0.1, Math.round(f * 1000) / 1000); renderRecipe(); }
 
 /* ---------------- add / convert ---------------- */
+const TRANSCRIBE_PROMPT = `אתה מתמלל טקסט מתמונות (OCR) בדיוק מרבי.
+תמלל את כל הטקסט של המתכון בדיוק כפי שהוא כתוב, מילה במילה, באותה שפה ובאותו סדר: שם המתכון, מצרכים עם הכמויות והיחידות בדיוק כפי שכתוב, שלבי ההכנה, הערות וטיפים.
+אל תתרגם, אל תתקן, אל תשלים חלקים חסרים, אל תסכם ואל תוסיף שום דבר שלא כתוב בתמונה.
+התעלם מכל מה שאינו חלק מהמתכון: פרסומות, תפריטים, כפתורים, שעון, סוללה ותגובות גולשים.
+מילה או מספר שלא קריאים לגמרי: כתוב את הניחוש הטוב ביותר וסמן [?] מיד אחריו.
+אם יש כמה תמונות, הן המשך אחת של השנייה. אל תחזור על שורות שמופיעות פעמיים בגלל חפיפה בין צילומים.
+החזר טקסט בלבד, בלי הקדמה ובלי הסברים.`;
+function formatAsk(src, isTranscript) {
+  let ask = isTranscript
+    ? "סדר את המתכון הבא לפי התבנית. זה תמלול מדויק של צילום. השתמש רק במה שכתוב בו, בלי להוסיף ובלי להשמיט מצרכים, כמויות או שלבים:\n<<<\n" + src + "\n>>>"
+    : "סדר את המתכון הבא לפי התבנית:\n<<<\n" + src + "\n>>>";
+  if ($("oneNote").value.trim()) ask += "\nהערה למתכון הזה: " + $("oneNote").value.trim();
+  return ask;
+}
 async function run() {
   const txt = $("srcText").value.trim();
-  if (!images.length && !txt) { setStatus($("runStatus"), "הוסיפי תמונה או הדביקי טקסט של מתכון.", true); return; }
+  if (!images.length && !txt) { setStatus($("runStatus"), "הוסיפי צילום, תמונה או טקסט של מתכון.", true); return; }
   if (!S.apiKey.trim()) { setStatus($("runStatus"), "חסר מפתח API. מדביקים אותו בתפריט > הגדרות.", true); return; }
-  const parts = images.map(im => ({ inlineData: { mimeType: im.mime, data: im.data } }));
-  let ask = images.length ? "סדר את המתכון שבתמונות לפי התבנית." : "סדר את המתכון הבא לפי התבנית.";
-  if ($("oneNote").value.trim()) ask += "\nהערה למתכון הזה: " + $("oneNote").value.trim();
-  if (txt) ask += "\n\nטקסט המתכון:\n" + txt;
-  parts.push({ text: ask });
-  const r = await callGemini([{ role: "user", parts }], "מסדרת את המתכון", $("runStatus"), [$("btnRun")], $("btnAbort"));
+  const st = $("runStatus"), dis = [$("btnRun")], ab = $("btnAbort");
+  let source = txt, r;
+  if (images.length && S.twoStage) {
+    const parts = images.map(im => ({ inlineData: { mimeType: im.mime, data: im.data } }));
+    parts.push({ text: "תמלל את המתכון שבתמונות." });
+    const t = await callGemini([{ role: "user", parts }], "שלב 1 מתוך 2: מתמללת את התמונה", st, dis, ab, { sys: TRANSCRIBE_PROMPT, temp: 0 });
+    if (!t) return;
+    source = t.text + (txt ? "\n\n" + txt : "");
+    r = await callGemini([{ role: "user", parts: [{ text: formatAsk(source, true) }] }], "שלב 2 מתוך 2: מסדרת לפי התבנית", st, dis, ab);
+  } else if (images.length) {
+    const parts = images.map(im => ({ inlineData: { mimeType: im.mime, data: im.data } }));
+    let ask = "סדר את המתכון שבתמונות לפי התבנית.";
+    if ($("oneNote").value.trim()) ask += "\nהערה למתכון הזה: " + $("oneNote").value.trim();
+    if (txt) ask += "\n\nטקסט נוסף:\n" + txt;
+    parts.push({ text: ask });
+    source = "";
+    r = await callGemini([{ role: "user", parts }], "מסדרת את המתכון", st, dis, ab);
+  } else {
+    r = await callGemini([{ role: "user", parts: [{ text: formatAsk(txt, false) }] }], "מסדרת את המתכון", st, dis, ab);
+  }
   if (!r) return;
   const it = newItem(r.text);
+  it.source = source;
+  const pics = images.map(im => im.url);
+  if (pics.length) { it.hasImages = true; await IDB.put(it.id, pics); }
+  saveBook();
   resetAdd();
-  stack.pop();             // replace "add" with the new recipe
-  curId = it.id; factor = 1; renderRecipe(); stack.push("recipe"); show("recipe", "fwd");
-  toast(r.usedFallback ? "נשמר בספר (עם מודל הגיבוי)" : "נשמר בספר המתכונים");
+  stack.pop();             // replace "add" with the new recipe (and its compare screen)
+  curId = it.id; factor = 1; renderRecipe(); stack.push("recipe");
+  if (S.openCompare && (pics.length || source)) { stack.push("compare"); await openCompareView(true); }
+  else show("recipe", "fwd");
+  toast(r.usedFallback ? "נשמר בספר (עם מודל הגיבוי)" : "נשמר בספר המתכונים. כדאי לבדוק מול המקור");
 }
 async function refine(id, instr) {
   const it = byId(id);
@@ -1204,14 +1321,14 @@ async function refine(id, instr) {
   it.prev = it.text; it.text = r.text; it.title = titleOf(r.text); it.updated = Date.now(); delete it.sample;
   saveBook(); closeSheet(); factor = 1; renderRecipe(); toast("המתכון עודכן");
 }
-async function callGemini(contents, label, statusEl, disable, abortBtn) {
+async function callGemini(contents, label, statusEl, disable, abortBtn, opt) {
   if (busy) return null;
   busy = withTimeout();
   disable.forEach(b => b && (b.disabled = true)); if (abortBtn) abortBtn.hidden = false;
   const t0 = Date.now();
   onAttempt = (m, i) => setStatus(statusEl, '<span class="spin"></span> ' + (i === -1 ? "הראשי עמוס, עוברת למודל הגיבוי" : i > 0 ? "השרת עמוס, מנסה שוב (" + i + ")" : label + "...") + " (" + esc(m) + ")");
   try {
-    const r = await gemini(contents, busy.signal);
+    const r = await gemini(contents, busy.signal, opt);
     setStatus(statusEl, r.cut ? "שימי לב: התשובה נחתכה. כדאי להגדיל את האורך המקסימלי בהגדרות." : "", r.cut);
     return r;
   } catch (e) {
@@ -1230,6 +1347,59 @@ function resetAdd() {
 function openAdd() {
   go("add");
   if (!S.apiKey) setStatus($("runStatus"), "לפני ההתחלה: מדביקים מפתח Gemini בתפריט > הגדרות.");
+}
+
+/* ---------------- compare: photo vs. text ---------------- */
+let cmpZoom = 1, cmpMode = "text";
+async function openCompareView(alreadyPushed) {
+  const it = byId(curId); if (!it) return;
+  cmpZoom = 1; cmpMode = "text";
+  const pics = it.hasImages ? (await IDB.get(it.id)) || [] : [];
+  const box = $("cmpImgs");
+  box.innerHTML = "";
+  if (pics.length) {
+    pics.forEach((u, i) => { const im = document.createElement("img"); im.src = u; im.alt = "צילום המקור " + (i + 1); box.appendChild(im); });
+  } else {
+    box.innerHTML = '<div class="cmp-empty">' + (it.source ? "אין צילום שמור למתכון הזה. מוצג הטקסט המקורי:" : "אין צילום או טקסט מקור שמורים למתכון הזה.") + (it.source ? '<pre></pre>' : "") + "</div>";
+    if (it.source) box.querySelector("pre").textContent = it.source;
+  }
+  $("cmpSegSrc").hidden = !it.source;
+  $("cmpRedo").hidden = true;
+  setCmpZoom(1); setCmpMode("text");
+  if (!alreadyPushed) stack.push("compare");
+  show("compare", "fwd");
+}
+function setCmpZoom(z) {
+  cmpZoom = Math.min(4, Math.max(1, z));
+  $("cmpImgs").style.setProperty("--zoom", cmpZoom);
+  $("cmpZoomVal").textContent = Math.round(cmpZoom * 100) + "%";
+}
+function setCmpMode(m) {
+  const it = byId(curId); if (!it) return;
+  cmpMode = m;
+  $("cmpText").value = m === "text" ? it.text : (it.source || "");
+  $("cmpSegText").setAttribute("aria-pressed", m === "text");
+  $("cmpSegSrc").setAttribute("aria-pressed", m === "src");
+  $("cmpRedo").hidden = m !== "src";
+  $("cmpHint").textContent = m === "text" ? "המתכון כפי שנשמר. אפשר לתקן כאן ישירות מול הצילום." : "התמלול של ג'ימיני מהצילום. תקני כאן טעויות קריאה, ואז 'ניסוח מחדש' יבנה את המתכון מהתמלול המתוקן.";
+}
+function saveCompare(silent) {
+  const it = byId(curId); if (!it) return;
+  const v = $("cmpText").value.trim();
+  if (cmpMode === "text") {
+    if (v && v !== it.text) { it.prev = it.text; it.text = v; it.title = titleOf(v); it.updated = Date.now(); delete it.sample; }
+  } else if (v !== (it.source || "")) { it.source = v; it.updated = Date.now(); }
+  saveBook(); renderRecipe();
+  if (!silent) toast("נשמר");
+}
+async function redoFromSource() {
+  const it = byId(curId); if (!it) return;
+  saveCompare(true);
+  if (!it.source) return;
+  const r = await callGemini([{ role: "user", parts: [{ text: formatAsk(it.source, true) }] }], "מנסחת מחדש מהתמלול", $("cmpStatus"), [$("cmpRedo"), $("cmpSave")], null);
+  if (!r) return;
+  it.prev = it.text; it.text = r.text; it.title = titleOf(r.text); it.updated = Date.now();
+  saveBook(); renderRecipe(); setCmpMode("text"); toast("המתכון נוסח מחדש מהתמלול המתוקן");
 }
 
 /* ---------------- edit ---------------- */
@@ -1393,6 +1563,15 @@ function init() {
   $("rNotes").addEventListener("input", () => { const it = byId(curId); if (!it) return; it.notes = $("rNotes").value; clearTimeout(notesT); notesT = setTimeout(saveBook, 400); });
 
   $("btnPickImg").onclick = () => $("fileInput").click();
+  $("btnCamera").onclick = () => $("camInput").click();
+  $("camInput").onchange = async (e) => { await addFiles([...e.target.files]); e.target.value = ""; if (images.length) toast("נוסף צילום. אפשר לצלם עוד עמוד"); };
+  $("cmpZoomIn").onclick = () => setCmpZoom(cmpZoom + 0.5);
+  $("cmpZoomOut").onclick = () => setCmpZoom(cmpZoom - 0.5);
+  $("cmpImgs").addEventListener("dblclick", () => setCmpZoom(cmpZoom > 1 ? 1 : 2.5));
+  $("cmpSegText").onclick = () => { saveCompare(true); setCmpMode("text"); };
+  $("cmpSegSrc").onclick = () => { saveCompare(true); setCmpMode("src"); };
+  $("cmpSave").onclick = () => { saveCompare(false); back(); };
+  $("cmpRedo").onclick = redoFromSource;
   $("fileInput").onchange = async (e) => { await addFiles([...e.target.files]); e.target.value = ""; };
   $("btnPasteText").onclick = () => { $("srcTextWrap").hidden = false; $("srcText").focus(); };
   $("btnManual").onclick = () => openEdit(null);

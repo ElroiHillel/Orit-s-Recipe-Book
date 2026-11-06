@@ -171,6 +171,7 @@ public class MainActivity extends Activity {
             pick.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE);
 
             Intent chooser = Intent.createChooser(pick, "בחירת תמונה");
+            Intent camDirect = null;
             cameraUri = null;
             if (type.startsWith("image") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
@@ -184,13 +185,14 @@ public class MainActivity extends Activity {
                         cam.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
                         cam.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cam});
+                        if (params.isCaptureEnabled()) camDirect = cam;   // the in-app "צילום" button
                     }
                 } catch (Exception e) {
                     cameraUri = null;
                 }
             }
             try {
-                startActivityForResult(chooser, REQ_FILE);
+                startActivityForResult(camDirect != null ? camDirect : chooser, REQ_FILE);
             } catch (Exception e) {
                 fileCallback = null;
                 cleanupCameraUri();
