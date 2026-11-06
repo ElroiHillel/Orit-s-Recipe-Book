@@ -18,6 +18,7 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -97,8 +98,11 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (web != null && web.canGoBack()) web.goBack();
-        else super.onBackPressed();
+        if (web == null || !pageLoaded) { super.onBackPressed(); return; }
+        // Let the page close a sheet or go back a screen first; leave the app only from the home screen.
+        web.evaluateJavascript("(window.handleBack && window.handleBack()) ? 1 : 0", result -> {
+            if (!"1".equals(result)) MainActivity.super.onBackPressed();
+        });
     }
 
     // ---------------------------------------------------------------- web client
@@ -304,6 +308,14 @@ public class MainActivity extends Activity {
     // ---------------------------------------------------------------- JS bridge
 
     private class Bridge {
+        @JavascriptInterface
+        public void keepAwake(boolean on) {
+            runOnUiThread(() -> {
+                if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            });
+        }
+
         @JavascriptInterface
         public String getPendingShare() {
             String s = pendingShare;
