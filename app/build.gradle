@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.matkonit.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.matkonit.app'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    // A fixed key in the repo so every build can install as an update over the previous one
+    // (a new key would force uninstalling and lose the saved recipes). Keep the repo private.
+    signingConfigs {
+        matkonit {
+            storeFile file('matkonit.keystore')
+            storePassword 'matkonit123'
+            keyAlias 'matkonit'
+            keyPassword 'matkonit123'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.matkonit
+        }
+        debug {
+            signingConfig signingConfigs.matkonit
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

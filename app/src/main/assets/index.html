@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מתכונית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;600;700&display=swap">
+<style>
+/* Layout: one-column kitchen notebook; screens switch via a fixed bottom bar. */
+:root {
+  --paper: #F5F7F1;
+  --surface: #FFFFFF;
+  --ink: #1D2820;
+  --muted: #5D6A60;
+  --line: #D8E0D4;
+  --basil: #2E6A44;
+  --basil-soft: #E3EFE6;
+  --saffron: #D99A1E;
+  --danger: #B3261E;
+  --font-display: "Frank Ruhl Libre", "David", "Times New Roman", serif;
+  --font-body: "Assistant", "Segoe UI", Arial, sans-serif;
+  --fs: 16px;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121814; --surface: #1A231D; --ink: #E6ECE4; --muted: #98A69B;
+    --line: #2B372F; --basil: #74C08F; --basil-soft: #1F3326; --saffron: #E7B44C; --danger: #F2867E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121814; --surface: #1A231D; --ink: #E6ECE4; --muted: #98A69B;
+  --line: #2B372F; --basil: #74C08F; --basil-soft: #1F3326; --saffron: #E7B44C; --danger: #F2867E;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--fs); line-height: 1.55;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  -webkit-tap-highlight-color: transparent;
+}
+main { max-width: 760px; margin: 0 auto; padding-block: 14px 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.screen { display: flex; flex-direction: column; gap: 16px; }
+header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.9em; margin: 0; letter-spacing: -0.01em; }
+h1 span { color: var(--basil); }
+h2 { font-family: var(--font-display); font-size: 1.25em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: .9em; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grow { flex: 1 1 160px; min-width: 0; }
+label.fld { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: .92em; }
+label.fld small, .hint { font-weight: 400; color: var(--muted); font-size: .85em; }
+input[type=text], input[type=password], input[type=number], input[type=search], select, textarea {
+  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; width: 100%; min-width: 0;
+}
+textarea { resize: vertical; line-height: 1.6; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--basil); outline-offset: 2px; }
+input[type=range] { width: 100%; accent-color: var(--basil); }
+button { font: inherit; cursor: pointer; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 14px; font-weight: 600; }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { background: var(--basil); border-color: var(--basil); color: var(--surface); font-size: 1.05em; padding: 13px 18px; }
+button.ghost { background: transparent; border-color: transparent; color: var(--basil); padding: 6px 8px; }
+button.danger { color: var(--danger); }
+button.chip { border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: .88em; background: var(--basil-soft); border-color: transparent; color: var(--ink); }
+.big-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.big-actions button { padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.big-actions button b { font-size: 1.5em; line-height: 1; color: var(--basil); }
+.thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.thumb { position: relative; width: 84px; height: 84px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb button { position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; padding: 0; border-radius: 50%; line-height: 1; background: var(--surface); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; background: transparent; padding: 7px 14px; }
+.seg button[aria-pressed=true] { background: var(--basil-soft); color: var(--basil); }
+.editor-wrap { min-width: 0; }
+#editor { min-height: 46vh; font-size: 1em; background: var(--surface); }
+#preview { min-height: 30vh; padding: 4px 2px; overflow-wrap: anywhere; }
+#preview h1, #preview h2, #preview h3 { font-family: var(--font-display); margin: .6em 0 .3em; line-height: 1.25; }
+#preview h1 { font-size: 1.7em; }
+#preview h2 { font-size: 1.2em; color: var(--basil); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+#preview ul, #preview ol { padding-inline-start: 1.4em; margin: .3em 0; }
+#preview li { margin: .15em 0; }
+#preview ul li::marker { color: var(--saffron); }
+#preview ol li::marker { color: var(--basil); font-weight: 700; }
+#preview blockquote { margin: .2em 0 .6em; color: var(--muted); font-style: italic; }
+#preview p { margin: .4em 0; }
+#preview hr { border: 0; border-top: 1px dashed var(--line); }
+#preview .plain { white-space: pre-wrap; }
+.sample-tag { display: inline-block; background: var(--saffron); color: #1D2820; font-size: .75em; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; }
+.status { font-size: .92em; color: var(--muted); }
+.status.err { color: var(--danger); font-weight: 600; }
+.spin { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-left-color: transparent; border-radius: 50%; animation: sp 0.8s linear infinite; vertical-align: -2px; }
+@keyframes sp { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
+.book-item { display: flex; gap: 10px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.book-item:last-child { border-bottom: 0; }
+.book-item .t { font-family: var(--font-display); font-weight: 700; font-size: 1.08em; }
+.book-item .m { color: var(--muted); font-size: .85em; }
+.book-item .body { flex: 1; min-width: 0; cursor: pointer; }
+.book-item .snip { color: var(--muted); font-size: .88em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empty { text-align: center; color: var(--muted); padding: 24px 8px; }
+details.sect { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+details.sect > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+details.sect > summary::-webkit-details-marker { display: none; }
+details.sect > summary h2 { font-size: 1.1em; }
+details.sect > summary::after { content: "+"; color: var(--basil); font-weight: 700; font-size: 1.3em; }
+details.sect[open] > summary::after { content: "−"; }
+details.sect .inner { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.toggle span { min-width: 0; }
+.toggle input { width: 22px; height: 22px; accent-color: var(--basil); flex: none; }
+.range-head { display: flex; justify-content: space-between; }
+.range-head output { font-variant-numeric: tabular-nums; color: var(--basil); font-weight: 700; }
+code.k { font-family: ui-monospace, monospace; font-size: .85em; background: var(--basil-soft); padding: 1px 5px; border-radius: 5px; direction: ltr; unicode-bidi: isolate; }
+.ltr { direction: ltr; text-align: left; }
+pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .85em; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px; max-height: 260px; overflow: auto; margin: 0; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--basil-soft); border-radius: 10px; padding: 8px 10px; font-size: .9em; }
+nav.tabs {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+}
+nav.tabs button { border: 0; border-radius: 0; background: transparent; padding: 10px 4px 12px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .85em; }
+nav.tabs button svg { width: 24px; height: 24px; }
+nav.tabs button[aria-current=page] { color: var(--basil); }
+#toast { position: fixed; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 999px; font-size: .92em; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
+.sticky-actions { position: sticky; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+</style>
+</head>
+<body>
+<main>
+
+<!-- ============ CONVERT ============ -->
+<section class="screen" id="scr-convert">
+  <header class="top">
+    <h1>מתכו<span>נית</span></h1>
+    <span class="sub" id="modelBadge"></span>
+  </header>
+
+  <div class="panel" id="inputPanel">
+    <div class="big-actions">
+      <button id="btnPickImg" type="button"><b>＋</b>תמונה או צילום מסך</button>
+      <button id="btnPasteText" type="button"><b>¶</b>הדבקת טקסט</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <div class="thumbs" id="thumbs"></div>
+    <label class="fld" id="srcTextWrap" hidden>טקסט המתכון
+      <textarea id="srcText" rows="6" placeholder="הדביקי כאן את המתכון, או קישור והטקסט שלו"></textarea>
+    </label>
+    <div class="row">
+      <label class="fld grow">כמות מנות רצויה <small>ריק = כמו במקור</small>
+        <input type="number" id="oneScale" min="1" max="200" inputmode="numeric">
+      </label>
+      <label class="fld grow">הערה למתכון הזה <small>לא חובה</small>
+        <input type="text" id="oneNote" placeholder="למשל: בלי חלב">
+      </label>
+    </div>
+    <div class="row">
+      <button class="primary grow" id="btnRun" type="button">סדרי לי את המתכון</button>
+      <button id="btnAbort" type="button" hidden>עצירה</button>
+    </div>
+    <div class="status" id="runStatus" role="status"></div>
+  </div>
+
+  <div class="panel" id="resultPanel">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="resultTitle">המתכון</h2>
+      <div class="seg" role="group" aria-label="מצב תצוגה">
+        <button type="button" id="segPreview" aria-pressed="true">תצוגה</button>
+        <button type="button" id="segEdit" aria-pressed="false">עריכה</button>
+      </div>
+    </div>
+    <div class="editor-wrap">
+      <div id="preview"></div>
+      <textarea id="editor" hidden spellcheck="true"></textarea>
+    </div>
+    <div class="row">
+      <button type="button" id="btnCopy">העתקה</button>
+      <button type="button" id="btnShare">שיתוף</button>
+      <button type="button" id="btnExport">שמירה כקובץ</button>
+      <select id="exportFmt" aria-label="פורמט קובץ" style="width:auto">
+        <option value="txt">טקסט (.txt)</option>
+        <option value="md">Markdown (.md)</option>
+        <option value="html">דף (.html)</option>
+        <option value="pdf">PDF</option>
+      </select>
+      <button type="button" id="btnSaveBook">לספר המתכונים</button>
+      <button type="button" class="ghost" id="btnUndo" hidden>לגרסה הקודמת</button>
+      <button type="button" class="ghost danger" id="btnClear">ניקוי</button>
+    </div>
+    <div class="panel" style="background:var(--paper)">
+      <label class="fld">לשנות משהו? <small>ג'ימיני יעדכן את המתכון שבעורך</small>
+        <div class="row">
+          <input type="text" id="refineText" class="grow" placeholder="למשל: תכפילי את הכמויות">
+          <button type="button" id="btnRefine">עדכון</button>
+        </div>
+      </label>
+      <div class="row" id="chips"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOOK ============ -->
+<section class="screen" id="scr-book" hidden>
+  <header class="top"><h1>ספר המתכונים</h1><span class="sub" id="bookCount"></span></header>
+  <input type="search" id="bookSearch" placeholder="חיפוש לפי שם או מצרך">
+  <div class="panel" id="bookList"></div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="screen" id="scr-settings" hidden>
+  <header class="top"><h1>הגדרות</h1><span class="sub">נשמר אוטומטית</span></header>
+
+  <details class="sect" open>
+    <summary><h2>חיבור לג'ימיני</h2></summary>
+    <div class="inner">
+      <label class="fld">מפתח API של Gemini
+        <small>יוצרים בחינם ב־<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. המפתח נשמר רק בטלפון.</small>
+        <div class="row">
+          <input type="password" id="s_apiKey" data-key="apiKey" class="grow ltr" autocomplete="off" placeholder="AIza...">
+          <button type="button" id="btnShowKey">הצגה</button>
+          <button type="button" id="btnPasteKey">הדבקה</button>
+        </div>
+      </label>
+      <label class="fld">מודל
+        <small>flash מהיר וזול, pro מדויק יותר ואיטי יותר</small>
+        <input type="text" id="s_model" data-key="model" list="modelList" class="ltr" autocomplete="off">
+        <datalist id="modelList">
+          <option value="gemini-3.8-flash">
+          <option value="gemini-3.5-flash-lite">
+          <option value="gemini-3.6-flash">
+          <option value="gemini-4-argon">
+        </datalist>
+      </label>
+      <div class="row">
+        <button type="button" id="btnListModels">טעינת רשימת מודלים מהחשבון</button>
+        <button type="button" id="btnTestKey">בדיקת חיבור</button>
+      </div>
+      <div class="status" id="connStatus"></div>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>ניסוח המתכון</h2></summary>
+    <div class="inner">
+      <label class="fld">שפת הפלט
+        <select id="s_lang" data-key="lang">
+          <option value="he">עברית</option>
+          <option value="source">כמו שפת המקור</option>
+          <option value="en">אנגלית</option>
+        </select>
+      </label>
+      <label class="fld">כמה להיצמד למקור
+        <select id="s_fidelity" data-key="fidelity">
+          <option value="strict">נאמן למקור, רק סידור לתבנית</option>
+          <option value="balanced">ניסוח ברור ומלוטש, בלי לשנות תוכן</option>
+          <option value="free">ניסוח חופשי, קצר ובהיר</option>
+        </select>
+      </label>
+      <label class="fld">יחידות מידה
+        <select id="s_units" data-key="units">
+          <option value="keep">להשאיר כמו במקור</option>
+          <option value="metric">להמיר לגרמים ומ"ל</option>
+          <option value="israeli">כוסות וכפות (מידות ישראליות)</option>
+          <option value="both">יחידה מקורית + המרה בסוגריים</option>
+        </select>
+      </label>
+      <label class="fld">טמפרטורה בתנור
+        <select id="s_temp" data-key="tempUnit">
+          <option value="c">צלזיוס</option>
+          <option value="keep">כמו במקור</option>
+        </select>
+      </label>
+      <label class="fld">כמות מנות ברירת מחדל <small>ריק = כמו במקור. אפשר לשנות לכל מתכון במסך הראשי</small>
+        <input type="number" id="s_scaleTo" data-key="scaleTo" min="1" max="200" inputmode="numeric">
+      </label>
+      <label class="fld">מידע חסר במקור (זמנים, מנות)
+        <select id="s_missing" data-key="missing">
+          <option value="omit">להשמיט את השורה</option>
+          <option value="estimate">להעריך ולסמן ~</option>
+          <option value="placeholder">להשאיר מקום ריק למילוי</option>
+        </select>
+      </label>
+      <div class="toggle"><span>מספור שלבי ההכנה</span><input type="checkbox" data-key="numberSteps" id="s_numberSteps"></div>
+      <div class="toggle"><span>חלוקת מצרכים לקבוצות (בצק, מילוי, ציפוי)</span><input type="checkbox" data-key="groupIngredients" id="s_groupIngredients"></div>
+      <div class="toggle"><span>זמני הכנה ובישול</span><input type="checkbox" data-key="includeTimes" id="s_includeTimes"></div>
+      <div class="toggle"><span>מספר מנות</span><input type="checkbox" data-key="includeServings" id="s_includeServings"></div>
+      <div class="toggle"><span>רמת קושי</span><input type="checkbox" data-key="difficulty" id="s_difficulty"></div>
+      <div class="toggle"><span>תגיות (חלבי, פרווה, צמחוני, ללא גלוטן...)</span><input type="checkbox" data-key="includeTags" id="s_includeTags"></div>
+      <div class="toggle"><span>הערכת ערכים תזונתיים למנה</span><input type="checkbox" data-key="nutrition" id="s_nutrition"></div>
+      <div class="toggle"><span>טיפים מהמקור</span><input type="checkbox" data-key="tips" id="s_tips"></div>
+      <div class="toggle"><span>להוסיף טיפים משלו</span><input type="checkbox" data-key="addTips" id="s_addTips"></div>
+      <div class="toggle"><span>סימון [?] כשמשהו בתמונה לא קריא</span><input type="checkbox" data-key="markUnclear" id="s_markUnclear"></div>
+      <div class="toggle"><span>שורת מקור (שם האתר/הספר אם מופיע)</span><input type="checkbox" data-key="sourceLine" id="s_sourceLine"></div>
+      <div class="toggle"><span>אימוג'ים בכותרות</span><input type="checkbox" data-key="emoji" id="s_emoji"></div>
+      <div class="toggle"><span>מצרכים מודגשים בתוך שלבי ההכנה</span><input type="checkbox" data-key="boldInSteps" id="s_boldInSteps"></div>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>תבנית ופורמט</h2></summary>
+    <div class="inner">
+      <label class="fld">סגנון הטקסט
+        <select id="s_outputStyle" data-key="outputStyle">
+          <option value="markdown">מעוצב (Markdown, כותרות ורשימות)</option>
+          <option value="whatsapp">מותאם לוואטסאפ (*מודגש*)</option>
+          <option value="plain">טקסט נקי בלי סימונים</option>
+        </select>
+      </label>
+      <label class="fld">התבנית
+        <small>ג'ימיני ימלא את הסוגריים המסולסלים. אפשר להוסיף, למחוק ולשנות סדר של סעיפים.</small>
+        <textarea id="s_template" data-key="template" rows="14"></textarea>
+      </label>
+      <div class="row"><button type="button" id="btnResetTemplate">החזרת תבנית ברירת המחדל</button></div>
+      <label class="fld">הוראות נוספות קבועות
+        <small>יתווספו לכל מתכון. למשל: "תמיד לציין אם המתכון חלבי או בשרי"</small>
+        <textarea id="s_extra" data-key="extra" rows="3"></textarea>
+      </label>
+      <label class="fld">כפתורי תיקון מהיר <small>שורה לכל כפתור, יופיעו מתחת למתכון</small>
+        <textarea id="s_chips" data-key="chips" rows="5"></textarea>
+      </label>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>מנוע (מתקדם)</h2></summary>
+    <div class="inner">
+      <div><div class="range-head"><span>יצירתיות (temperature)</span><output id="o_temperature"></output></div>
+        <input type="range" id="s_temperature" data-key="temperature" min="0" max="2" step="0.05">
+        <div class="hint">נמוך = נאמן ועקבי. למתכונים מומלץ 0.2 עד 0.4</div></div>
+      <div><div class="range-head"><span>Top-P</span><output id="o_topP"></output></div>
+        <input type="range" id="s_topP" data-key="topP" min="0.05" max="1" step="0.05"></div>
+      <label class="fld">אורך תשובה מקסימלי (טוקנים)
+        <input type="number" id="s_maxTokens" data-key="maxTokens" min="256" max="65536" step="256">
+      </label>
+      <label class="fld">רמת חשיבה
+        <small>"ברירת מחדל" לא שולח את הפרמטר. אם מודל מחזיר שגיאה, החזירי לברירת מחדל</small>
+        <select id="s_thinking" data-key="thinking">
+          <option value="default">ברירת מחדל של המודל</option>
+          <option value="low">נמוכה (מהיר)</option>
+          <option value="high">גבוהה (מדויק)</option>
+        </select>
+      </label>
+      <label class="fld">זמן המתנה מקסימלי (שניות)
+        <input type="number" id="s_timeoutSec" data-key="timeoutSec" min="15" max="600">
+      </label>
+      <div><div class="range-head"><span>רזולוציית תמונה שנשלחת (פיקסלים)</span><output id="o_imageMaxPx"></output></div>
+        <input type="range" id="s_imageMaxPx" data-key="imageMaxPx" min="800" max="3200" step="100">
+        <div class="hint">גבוה יותר עוזר בצילומי מסך ארוכים עם כתב קטן</div></div>
+      <div><div class="range-head"><span>איכות דחיסה</span><output id="o_imageQuality"></output></div>
+        <input type="range" id="s_imageQuality" data-key="imageQuality" min="0.5" max="1" step="0.05"></div>
+      <div class="toggle"><span>פרומפט מערכת משלי (במקום זה שנבנה מההגדרות)</span><input type="checkbox" data-key="customPromptOn" id="s_customPromptOn"></div>
+      <label class="fld" id="customPromptWrap">פרומפט מערכת
+        <textarea id="s_customPrompt" data-key="customPrompt" rows="10"></textarea>
+      </label>
+      <div class="row"><button type="button" id="btnCopyBuilt">העתקת הפרומפט שנבנה לעורך</button></div>
+      <div class="fld">הפרומפט שנשלח כרגע<pre class="prompt" id="promptPreview"></pre></div>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>שמירה וייצוא</h2></summary>
+    <div class="inner">
+      <label class="fld">פורמט קובץ ברירת מחדל
+        <select id="s_exportFormat" data-key="exportFormat">
+          <option value="txt">טקסט (.txt)</option>
+          <option value="md">Markdown (.md)</option>
+          <option value="html">דף (.html)</option>
+          <option value="pdf">PDF</option>
+        </select>
+      </label>
+      <label class="fld">שם הקובץ <small><code class="k">{title}</code> שם המתכון, <code class="k">{date}</code> תאריך</small>
+        <input type="text" id="s_fileNamePattern" data-key="fileNamePattern">
+      </label>
+      <div class="toggle"><span>שמירה אוטומטית לספר המתכונים אחרי כל המרה</span><input type="checkbox" data-key="autoSave" id="s_autoSave"></div>
+      <div class="toggle"><span>המרה אוטומטית כשמשתפים תמונה לאפליקציה</span><input type="checkbox" data-key="autoRunShare" id="s_autoRunShare"></div>
+      <div class="toggle"><span>בשיתוף, לשלוח כטקסט נקי (בלי # ו־**)</span><input type="checkbox" data-key="sharePlain" id="s_sharePlain"></div>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>תצוגה</h2></summary>
+    <div class="inner">
+      <label class="fld">ערכת צבעים
+        <select id="s_theme" data-key="theme">
+          <option value="system">לפי הטלפון</option>
+          <option value="light">בהירה</option>
+          <option value="dark">כהה</option>
+        </select>
+      </label>
+      <div><div class="range-head"><span>גודל טקסט</span><output id="o_fontSize"></output></div>
+        <input type="range" id="s_fontSize" data-key="fontSize" min="13" max="22" step="1"></div>
+      <label class="fld">מסך התוצאה נפתח ב
+        <select id="s_editorDefault" data-key="editorDefault">
+          <option value="preview">תצוגה</option>
+          <option value="edit">עריכה</option>
+        </select>
+      </label>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>שימוש באפליקציית Gemini</h2></summary>
+    <div class="inner">
+      <p class="hint" style="margin:0">רוצה לעבוד ישר מאפליקציית Gemini? יוצרים Gem חדש, מדביקים את הפרומפט הזה בהוראות, ומאז פשוט שולחים לו צילום מסך או טקסט. הפרומפט נבנה מההגדרות שלמעלה.</p>
+      <div class="row"><button type="button" id="btnCopyGem">העתקת פרומפט ל־Gem</button><button type="button" id="btnShareGem">שיתוף</button></div>
+    </div>
+  </details>
+
+  <details class="sect">
+    <summary><h2>גיבוי ואיפוס</h2></summary>
+    <div class="inner">
+      <div class="toggle"><span>לכלול את מפתח ה־API בגיבוי</span><input type="checkbox" id="bkIncludeKey"></div>
+      <div class="row">
+        <button type="button" id="btnBackupSave">שמירת גיבוי לקובץ</button>
+        <button type="button" id="btnBackupCopy">העתקת גיבוי</button>
+      </div>
+      <label class="fld">שחזור מגיבוי <small>בחירת קובץ גיבוי או הדבקת הטקסט שלו</small>
+        <input type="file" id="restoreFile" accept=".json,application/json,text/plain">
+        <textarea id="restoreText" rows="3" class="ltr" placeholder='{"settings": ...}'></textarea>
+      </label>
+      <div class="row"><button type="button" id="btnRestore">שחזור</button></div>
+      <div class="row">
+        <button type="button" class="danger" id="btnResetSettings">איפוס כל ההגדרות</button>
+      </div>
+      <div id="resetConfirm" class="confirm" hidden>
+        <span>לאפס את כל ההגדרות? המפתח וספר המתכונים נשארים.</span>
+        <button type="button" class="danger" id="btnResetYes">כן, לאפס</button>
+        <button type="button" id="btnResetNo">ביטול</button>
+      </div>
+    </div>
+  </details>
+  <p class="hint" style="text-align:center">מתכונית 1.0</p>
+</section>
+</main>
+
+<nav class="tabs" aria-label="ניווט">
+  <button type="button" data-tab="convert" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 20V9a6 6 0 0 1 12 0v11"/><path d="M12 3v2"/><path d="M9 13h6"/></svg>
+    המרה</button>
+  <button type="button" data-tab="book">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M4 17a3 3 0 0 1 3-3h11"/><path d="M8 8h6"/></svg>
+    ספר מתכונים</button>
+  <button type="button" data-tab="settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/><path d="M4 18h10"/><path d="M18 18h2"/><circle cx="16" cy="18" r="2"/></svg>
+    הגדרות</button>
+</nav>
+<div id="toast" hidden></div>
+
+<script>
+"use strict";
+/* ---------------- defaults ---------------- */
+const DEFAULT_TEMPLATE = `# {שם המתכון}
+> {תיאור קצר במשפט אחד}
+
+**מנות:** {מספר מנות} · **הכנה:** {זמן הכנה} · **בישול/אפייה:** {זמן בישול}
+
+## מצרכים
+- {כמות} {יחידה} {מצרך}
+
+## אופן ההכנה
+1. {שלב}
+
+## טיפים
+- {טיפ}`;
+
+const DEFAULT_CHIPS = `להכפיל את הכמויות
+חצי כמות
+גרסה פרווה
+גרסה ללא גלוטן
+לקצר את שלבי ההכנה
+לתרגם לאנגלית`;
+
+const DEFAULTS = {
+  apiKey: "", model: "gemini-3.8-flash",
+  temperature: 0.3, topP: 0.95, maxTokens: 8192, thinking: "default", timeoutSec: 120,
+  imageMaxPx: 1800, imageQuality: 0.85,
+  lang: "he", fidelity: "balanced", units: "keep", tempUnit: "c", scaleTo: "", missing: "omit",
+  numberSteps: true, groupIngredients: true, includeTimes: true, includeServings: true, difficulty: false,
+  includeTags: false, nutrition: false, tips: true, addTips: false, markUnclear: true, sourceLine: true,
+  emoji: false, boldInSteps: false,
+  outputStyle: "markdown", template: DEFAULT_TEMPLATE, extra: "", chips: DEFAULT_CHIPS,
+  customPromptOn: false, customPrompt: "",
+  exportFormat: "txt", fileNamePattern: "{title}", autoSave: true, autoRunShare: true, sharePlain: false,
+  theme: "system", fontSize: 16, editorDefault: "preview"
+};
+
+const SAMPLE = `# שקשוקה ביתית
+> שקשוקה עשירה עם פלפלים, בדיוק כמו בבוקר של שבת.
+
+**מנות:** 4 · **הכנה:** 10 דקות · **בישול/אפייה:** 25 דקות
+
+## מצרכים
+- 3 כפות שמן זית
+- 1 בצל בינוני, קצוץ
+- 1 פלפל אדום, פרוס
+- 3 שיני שום, פרוסות
+- 1 כפית פפריקה מתוקה
+- 1/2 כפית כמון
+- 6 עגבניות בשלות, מגוררות
+- 6 ביצים
+- מלח ופלפל שחור לפי הטעם
+
+## אופן ההכנה
+1. מחממים שמן במחבת רחבה ומטגנים את הבצל עד שמזהיב, כ־5 דקות.
+2. מוסיפים פלפל ושום ומטגנים עוד 3 דקות.
+3. מוסיפים פפריקה, כמון ועגבניות, מתבלים ומבשלים על אש בינונית 12 דקות עד שהרוטב מסמיך.
+4. יוצרים גומות ברוטב, שוברים לתוכן את הביצים, מכסים ומבשלים 5 עד 7 דקות.
+
+## טיפים
+- לחלמון נוזלי מכבים את האש כשהחלבון עוד מעט רוטט.`;
+
+/* ---------------- state & storage ---------------- */
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let S = Object.assign({}, DEFAULTS, LS.get("mt.settings", {}));
+let book = LS.get("mt.book", []);
+let draft = LS.get("mt.draft", null);
+let images = [];          // [{mime, data(base64), url}]
+let currentId = draft ? draft.id : null;
+let isSample = !draft;
+let versions = [];
+let busy = null;          // AbortController
+
+const $ = (id) => document.getElementById(id);
+const Native = window.Native || null;
+
+function saveSettings() { LS.set("mt.settings", S); }
+function saveBook() { LS.set("mt.book", book); }
+function saveDraft() { LS.set("mt.draft", { id: currentId, text: $("editor").value }); }
+
+/* ---------------- helpers ---------------- */
+function esc(s) { return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+function setStatus(el, msg, err) { el.innerHTML = msg; el.classList.toggle("err", !!err); }
+function titleOf(text) {
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+  const h = lines.find(l => /^#\s+/.test(l));
+  let t = (h || lines[0] || "מתכון").replace(/^#+\s*/, "").replace(/[*_`>]/g, "").trim();
+  return t.slice(0, 80) || "מתכון";
+}
+function dateStr(d) { d = d || new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function fileName(text, ext) {
+  const base = (S.fileNamePattern || "{title}").replace(/\{title\}/g, titleOf(text)).replace(/\{date\}/g, dateStr());
+  return base.replace(/[\\/:*?"<>|]+/g, "").replace(/\s+/g, " ").trim().slice(0, 100) + "." + ext;
+}
+
+/* ---------------- markdown ---------------- */
+function inline(s, style) {
+  s = esc(s);
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  if (style === "whatsapp") s = s.replace(/(^|[\s(])\*(\S(?:.*?\S)?)\*(?=$|[\s.,:;!?)])/g, "$1<strong>$2</strong>").replace(/(^|[\s(])_(\S(?:.*?\S)?)_(?=$|[\s.,:;!?)])/g, "$1<em>$2</em>");
+  else s = s.replace(/(^|[\s(])\*(\S(?:.*?\S)?)\*(?=$|[\s.,:;!?)])/g, "$1<em>$2</em>");
+  return s;
+}
+function mdToHtml(src, style) {
+  if (style === "plain") return '<div class="plain">' + esc(src) + "</div>";
+  const lines = src.replace(/\r/g, "").split("\n");
+  let html = "", list = null;
+  const close = () => { if (list) { html += "</" + list + ">"; list = null; } };
+  for (const raw of lines) {
+    const l = raw.replace(/\s+$/, "");
+    let m;
+    if (!l.trim()) { close(); continue; }
+    if ((m = l.match(/^(#{1,4})\s+(.*)/))) { close(); const n = m[1].length; html += "<h" + n + ">" + inline(m[2], style) + "</h" + n + ">"; continue; }
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(l)) { close(); html += "<hr>"; continue; }
+    if ((m = l.match(/^\s*>\s?(.*)/))) { close(); html += "<blockquote>" + inline(m[1], style) + "</blockquote>"; continue; }
+    if ((m = l.match(/^\s*[-•▪◦]\s+(.*)/)) || (style !== "whatsapp" && (m = l.match(/^\s*\*\s+(.*)/)))) {
+      if (list !== "ul") { close(); html += "<ul>"; list = "ul"; }
+      html += "<li>" + inline(m[1], style) + "</li>"; continue;
+    }
+    if ((m = l.match(/^\s*(\d+)[.)]\s+(.*)/))) {
+      if (list !== "ol") { close(); html += '<ol start="' + m[1] + '">'; list = "ol"; }
+      html += "<li>" + inline(m[2], style) + "</li>"; continue;
+    }
+    close(); html += "<p>" + inline(l, style) + "</p>";
+  }
+  close();
+  return html;
+}
+function toPlain(src) {
+  return src.replace(/^#{1,6}\s+/gm, "").replace(/^\s*>\s?/gm, "").replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/(^|\s)\*(\S(?:.*?\S)?)\*/g, "$1$2").replace(/^\s*[-*]\s+/gm, "• ");
+}
+function toWhatsapp(src) {
+  return src.replace(/^#{1,6}\s+(.*)$/gm, "*$1*").replace(/\*\*(.+?)\*\*/g, "*$1*").replace(/^\s*>\s?/gm, "_").replace(/^_(.*)$/gm, "_$1_");
+}
+function fullHtml(text) {
+  const style = S.outputStyle;
+  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(titleOf(text))}</title>
+<style>body{font-family:Assistant,Arial,sans-serif;max-width:680px;margin:32px auto;padding:0 20px;line-height:1.6;color:#1D2820}
+h1,h2,h3{font-family:"Frank Ruhl Libre",David,serif;line-height:1.25}h1{font-size:28px;margin:0 0 6px}h2{font-size:19px;color:#2E6A44;border-bottom:1px solid #D8E0D4;padding-bottom:4px;margin-top:22px}
+blockquote{margin:0 0 12px;color:#5D6A60;font-style:italic}ul li::marker{color:#D99A1E}ol li::marker{color:#2E6A44;font-weight:700}li{margin:3px 0}.plain{white-space:pre-wrap}
+@page{margin:16mm}</style></head><body>${mdToHtml(text, style)}</body></html>`;
+}
+
+/* ---------------- prompt building ---------------- */
+function buildSystemPrompt() {
+  if (S.customPromptOn && S.customPrompt.trim()) return S.customPrompt.trim();
+  const r = [];
+  const lang = { he: "כתוב את כל המתכון בעברית תקנית וטבעית, גם אם המקור בשפה אחרת.", source: "כתוב באותה שפה שבה כתוב המקור.", en: "Write the whole recipe in natural English, even if the source is in another language." }[S.lang];
+  r.push(lang);
+  r.push({ strict: "היצמד לניסוח המקורי ככל האפשר. התפקיד שלך הוא לסדר את התוכן בתבנית, לא לשכתב.", balanced: "נסח בצורה ברורה, עקבית ומלוטשת, בגוף סתמי (מחממים, מוסיפים), בלי לשנות את התוכן.", free: "נסח מחדש בחופשיות כך שיהיה קצר, בהיר וקל לביצוע, בגוף סתמי. שמור על כל הכמויות והשלבים המהותיים." }[S.fidelity]);
+  r.push({ keep: "השאר את יחידות המידה כפי שהן במקור.", metric: "המר את כל הכמויות לגרמים ולמיליליטרים (עגל למספרים נוחים). השאר יחידות טבעיות כמו ביצים או שיני שום.", israeli: "השתמש ביחידות מטבח ישראליות: כוס (240 מ\"ל), כף, כפית, וגרמים למוצרים ארוזים. המר אונקיות, פאונד וכוסות אמריקאיות.", both: "השאר את היחידה המקורית והוסף המרה מטרית בסוגריים כשהיא שונה." }[S.units]);
+  if (S.tempUnit === "c") r.push("המר טמפרטורות תנור לצלזיוס.");
+  const scale = currentScale();
+  if (scale) r.push(`התאם את כל הכמויות ל־${scale} מנות. אם במקור לא כתוב מספר מנות, הערך אותו ואז התאם. ציין את מספר המנות החדש.`);
+  r.push({ omit: "אם חסר במקור מידע שהתבנית מבקשת (זמן, מספר מנות וכו'), השמט את השורה או החלק הזה לגמרי. אל תמציא.", estimate: "אם חסר במקור מידע שהתבנית מבקשת (זמן, מספר מנות), תן הערכה סבירה וסמן אותה ב־~.", placeholder: "אם חסר במקור מידע שהתבנית מבקשת, השאר את המקום עם ___ כדי שאפשר יהיה למלא ידנית." }[S.missing]);
+  r.push(S.numberSteps ? "מספר את שלבי ההכנה, שלב אחד לכל פעולה מרכזית." : "כתוב את שלבי ההכנה כרשימת תבליטים בלי מספור.");
+  if (S.groupIngredients) r.push("אם למתכון יש כמה רכיבים (בצק, מילוי, ציפוי, רוטב), חלק את המצרכים ואת שלבי ההכנה לתתי־כותרות לפי הרכיבים.");
+  if (!S.includeTimes) r.push("אל תכלול זמני הכנה ובישול בשורת הפרטים.");
+  if (!S.includeServings) r.push("אל תכלול מספר מנות בשורת הפרטים.");
+  if (S.difficulty) r.push("הוסף לשורת הפרטים רמת קושי: קל, בינוני או מאתגר.");
+  if (S.includeTags) r.push("הוסף אחרי שורת הפרטים שורת תגיות: חלבי/בשרי/פרווה, צמחוני/טבעוני, ללא גלוטן, וסוג המנה (עיקרית, תוספת, קינוח וכו').");
+  if (S.nutrition) r.push("הוסף בסוף סעיף 'ערכים תזונתיים למנה (הערכה)' עם קלוריות, חלבון, פחמימות ושומן, וציין שזו הערכה.");
+  if (!S.tips && !S.addTips) r.push("אל תכלול סעיף טיפים.");
+  else if (S.tips && !S.addTips) r.push("בסעיף הטיפים כלול רק טיפים והערות שמופיעים במקור. אם אין, השמט את הסעיף.");
+  else if (S.addTips) r.push("בסעיף הטיפים כלול טיפים מהמקור, ואפשר להוסיף עד 3 טיפים מעשיים משלך.");
+  if (S.markUnclear) r.push("אם מילה או כמות לא קריאה בתמונה, כתוב את ההשערה הטובה ביותר וסמן [?] אחריה.");
+  if (S.sourceLine) r.push("אם במקור מופיע שם האתר, הספר או הכותב, הוסף בסוף שורה 'מקור: ...'.");
+  r.push(S.emoji ? "הוסף אימוג'י אחד מתאים לפני כל כותרת סעיף." : "אל תשתמש באימוג'ים.");
+  if (S.boldInSteps) r.push("בשלבי ההכנה, הדגש את שמות המצרכים.");
+  r.push({ markdown: "הפלט בפורמט Markdown: # לכותרת, ## לסעיפים, - לרשימות, ** להדגשה.", whatsapp: "הפלט מותאם לוואטסאפ: בלי סימני #. כותרות ושמות סעיפים מודגשים בכוכבית אחת משני הצדדים (*כך*), רשימות עם - ומספרים.", plain: "הפלט טקסט נקי בלבד: בלי #, בלי כוכביות ובלי סימוני עיצוב. כותרות סעיפים בשורה נפרדת, רשימות עם • ומספרים." }[S.outputStyle]);
+  r.push("אל תמציא מצרכים, כמויות או שלבים שלא מופיעים במקור (חוץ ממה שהתבקשת במפורש למעלה).");
+  r.push("אם בתמונה יש כמה מתכונים, סדר כל אחד בנפרד לפי התבנית, עם קו מפריד (---) ביניהם.");
+  r.push("אם הקלט בכלל לא מתכון, החזר משפט אחד שמסביר מה חסר.");
+  r.push("החזר רק את המתכון המעוצב. בלי הקדמה, בלי הסברים ובלי סיכום.");
+  let p = "אתה עורך מתכונים מקצועי. תקבל צילום מסך, תמונה או טקסט של מתכון, ותנסח אותו מחדש בדיוק לפי התבנית שלמטה.\n\nכללים:\n" + r.map(x => "- " + x).join("\n");
+  p += "\n\nהתבנית (הסוגריים המסולסלים הם מקומות למילוי, שורות עם רשימה חוזרות לפי הצורך):\n<<<\n" + S.template.trim() + "\n>>>";
+  if (S.extra.trim()) p += "\n\nהוראות נוספות:\n" + S.extra.trim();
+  return p;
+}
+function gemPrompt() {
+  return "המטרה שלך: לקבל ממני מתכון (צילום מסך, תמונה, קישור עם טקסט או טקסט מודבק) ולהחזיר אותו מסודר לפי התבנית הקבועה שלי, מוכן להעתקה.\n\n" + buildSystemPrompt() +
+    "\n\nאם ביקשתי שינוי אחרי שקיבלתי מתכון (למשל הכפלת כמויות), החזר את המתכון המלא המעודכן באותה תבנית.";
+}
+function currentScale() { const v = $("oneScale").value || S.scaleTo; const n = parseInt(v, 10); return n > 0 ? n : 0; }
+
+/* ---------------- gemini ---------------- */
+function modelName() { return (S.model || DEFAULTS.model).trim().replace(/^models\//, ""); }
+function apiBase() { return "https://generativelanguage.googleapis.com/v1beta/"; }
+async function gemini(contents, signal) {
+  if (!S.apiKey.trim()) throw new Error("NOKEY");
+  const gen = { temperature: Number(S.temperature), topP: Number(S.topP), maxOutputTokens: Number(S.maxTokens) };
+  if (S.thinking !== "default") gen.thinkingConfig = { thinkingLevel: S.thinking };
+  const body = { systemInstruction: { parts: [{ text: buildSystemPrompt() }] }, contents, generationConfig: gen };
+  let res;
+  try {
+    res = await fetch(apiBase() + "models/" + encodeURIComponent(modelName()) + ":generateContent", {
+      method: "POST", signal, headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey.trim() }, body: JSON.stringify(body)
+    });
+  } catch (e) {
+    if (e.name === "AbortError") throw e;
+    throw new Error("אין חיבור לאינטרנט, או שהשרת לא זמין. נסי שוב.");
+  }
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(explainError(res.status, j));
+  const c = (j.candidates || [])[0];
+  if (!c) {
+    const br = j.promptFeedback && j.promptFeedback.blockReason;
+    throw new Error(br ? "ג'ימיני חסם את הבקשה (" + br + ")." : "לא התקבלה תשובה. נסי שוב.");
+  }
+  const text = ((c.content && c.content.parts) || []).filter(p => p.text && !p.thought).map(p => p.text).join("").trim();
+  if (!text) throw new Error(c.finishReason === "MAX_TOKENS" ? "התשובה נחתכה. הגדילי את 'אורך תשובה מקסימלי' בהגדרות." : "התקבלה תשובה ריקה (" + (c.finishReason || "?") + ").");
+  return { text: stripFences(text), cut: c.finishReason === "MAX_TOKENS" };
+}
+function stripFences(t) { const m = t.match(/^```[a-z]*\n([\s\S]*?)\n```$/i); return m ? m[1].trim() : t; }
+function explainError(status, j) {
+  const msg = (j.error && j.error.message) || "";
+  if (status === 400 && /api key/i.test(msg)) return "מפתח ה־API לא תקין. בדקי אותו בהגדרות.";
+  if (status === 400 && /thinking/i.test(msg)) return "המודל לא תומך ברמת החשיבה שנבחרה. בהגדרות > מנוע, החזירי ל'ברירת מחדל'.";
+  if (status === 403) return "למפתח אין הרשאה למודל הזה. בדקי את המפתח או בחרי מודל אחר.";
+  if (status === 404) return "המודל \"" + modelName() + "\" לא נמצא. בהגדרות לחצי 'טעינת רשימת מודלים' ובחרי אחד.";
+  if (status === 429) return "הגעת למכסת השימוש של ג'ימיני. חכי דקה ונסי שוב, או בחרי מודל flash-lite.";
+  if (status >= 500) return "השרת של ג'ימיני עמוס כרגע (" + status + "). נסי שוב עוד רגע.";
+  return "שגיאה " + status + ": " + msg.slice(0, 200);
+}
+function withTimeout() {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), Number(S.timeoutSec || 120) * 1000);
+  ac.clear = () => clearTimeout(t);
+  return ac;
+}
+
+/* ---------------- images ---------------- */
+function loadImg(src) { return new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = src; }); }
+async function addImageFromDataUrl(dataUrl) {
+  const img = await loadImg(dataUrl);
+  const max = Number(S.imageMaxPx) || 1800;
+  const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h); cx.drawImage(img, 0, 0, w, h);
+  const out = cv.toDataURL("image/jpeg", Number(S.imageQuality) || 0.85);
+  images.push({ mime: "image/jpeg", data: out.split(",")[1], url: out });
+  renderThumbs();
+}
+function fileToDataUrl(f) { return new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = bad; r.readAsDataURL(f); }); }
+async function addFiles(files) {
+  for (const f of files) {
+    if (!f.type.startsWith("image/")) continue;
+    try { await addImageFromDataUrl(await fileToDataUrl(f)); } catch (e) { toast("לא הצלחתי לקרוא את התמונה " + f.name); }
+  }
+}
+function renderThumbs() {
+  const box = $("thumbs"); box.innerHTML = "";
+  images.forEach((im, i) => {
+    const d = document.createElement("div"); d.className = "thumb";
+    d.innerHTML = '<img alt="תמונה ' + (i + 1) + '"><button type="button" aria-label="הסרה">×</button>';
+    d.querySelector("img").src = im.url;
+    d.querySelector("button").onclick = () => { images.splice(i, 1); renderThumbs(); };
+    box.appendChild(d);
+  });
+}
+
+/* ---------------- result / editor ---------------- */
+function setResult(text, opts) {
+  opts = opts || {};
+  $("editor").value = text;
+  isSample = !!opts.sample;
+  if (!opts.keepId) currentId = opts.id || null;
+  renderPreview();
+  if (!opts.sample) saveDraft();
+}
+function renderPreview() {
+  const t = $("editor").value;
+  $("preview").innerHTML = (isSample ? '<span class="sample-tag">דוגמה</span>' : "") + (t.trim() ? mdToHtml(t, S.outputStyle) : '<p class="empty">המתכון המסודר יופיע כאן.</p>');
+  $("resultTitle").textContent = t.trim() ? titleOf(t) : "המתכון";
+}
+function setMode(m) {
+  const edit = m === "edit";
+  $("editor").hidden = !edit; $("preview").hidden = edit;
+  $("segEdit").setAttribute("aria-pressed", edit); $("segPreview").setAttribute("aria-pressed", !edit);
+  if (!edit) renderPreview();
+}
+function pushVersion() { versions.push($("editor").value); if (versions.length > 20) versions.shift(); $("btnUndo").hidden = false; }
+
+/* ---------------- run ---------------- */
+async function run() {
+  const txt = $("srcText").value.trim();
+  if (!images.length && !txt) { setStatus($("runStatus"), "הוסיפי תמונה או הדביקי טקסט של מתכון.", true); return; }
+  if (!S.apiKey.trim()) { setStatus($("runStatus"), "חסר מפתח API. מדביקים אותו בהגדרות > חיבור לג'ימיני.", true); return; }
+  const parts = images.map(im => ({ inlineData: { mimeType: im.mime, data: im.data } }));
+  let ask = images.length ? "סדר את המתכון שבתמונות לפי התבנית." : "סדר את המתכון הבא לפי התבנית.";
+  if ($("oneNote").value.trim()) ask += "\nהערה למתכון הזה: " + $("oneNote").value.trim();
+  if (txt) ask += "\n\nטקסט המתכון:\n" + txt;
+  parts.push({ text: ask });
+  await callAndShow([{ role: "user", parts }], "מסדרת את המתכון...", false);
+}
+async function refine(instr) {
+  const cur = $("editor").value.trim();
+  if (!cur || isSample) { toast("קודם צריך מתכון בעורך"); return; }
+  if (!instr.trim()) { toast("כתבי מה לשנות"); return; }
+  const msg = "זה המתכון הנוכחי:\n<<<\n" + cur + "\n>>>\n\nבקשה: " + instr.trim() + "\n\nהחזר את המתכון המלא המעודכן, באותה תבנית ובאותו פורמט.";
+  await callAndShow([{ role: "user", parts: [{ text: msg }] }], "מעדכנת...", true);
+}
+async function callAndShow(contents, label, isRefine) {
+  if (busy) return;
+  busy = withTimeout();
+  $("btnRun").disabled = true; $("btnRefine").disabled = true; $("btnAbort").hidden = false;
+  setStatus($("runStatus"), '<span class="spin"></span> ' + label + " (" + esc(modelName()) + ")");
+  const t0 = Date.now();
+  try {
+    const r = await gemini(contents, busy.signal);
+    if (!isSample && $("editor").value.trim()) pushVersion();
+    setResult(r.text, { keepId: isRefine });
+    setMode(S.editorDefault);
+    let s = "מוכן תוך " + Math.round((Date.now() - t0) / 1000) + " שניות.";
+    if (r.cut) s += " שימי לב: התשובה נחתכה, כדאי להגדיל את האורך המקסימלי בהגדרות.";
+    setStatus($("runStatus"), s, r.cut);
+    if (isRefine) $("refineText").value = "";
+    if (S.autoSave) { saveToBook(true); }
+    $("resultPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    if (e.name === "AbortError") setStatus($("runStatus"), "הבקשה נעצרה" + (Date.now() - t0 >= Number(S.timeoutSec) * 1000 - 500 ? " (עבר זמן ההמתנה המקסימלי)." : "."), true);
+    else if (e.message === "NOKEY") setStatus($("runStatus"), "חסר מפתח API בהגדרות.", true);
+    else setStatus($("runStatus"), esc(e.message), true);
+  } finally {
+    busy.clear(); busy = null;
+    $("btnRun").disabled = false; $("btnRefine").disabled = false; $("btnAbort").hidden = true;
+  }
+}
+
+/* ---------------- book ---------------- */
+function saveToBook(silent) {
+  const text = $("editor").value.trim();
+  if (!text || isSample) { if (!silent) toast("אין מתכון לשמור"); return; }
+  const now = Date.now();
+  let it = currentId && book.find(b => b.id === currentId);
+  if (it) { it.text = text; it.title = titleOf(text); it.updated = now; }
+  else { it = { id: "r" + now.toString(36), title: titleOf(text), text, created: now, updated: now }; book.unshift(it); currentId = it.id; }
+  saveBook(); saveDraft(); renderBook();
+  if (!silent) toast("נשמר בספר המתכונים"); else toast("מוכן ונשמר בספר");
+}
+function renderBook() {
+  const q = $("bookSearch").value.trim();
+  const list = $("bookList");
+  const items = book.filter(b => !q || b.text.includes(q));
+  $("bookCount").textContent = book.length ? book.length + " מתכונים" : "";
+  if (!items.length) {
+    list.innerHTML = '<div class="empty">' + (book.length ? "לא נמצא מתכון שמתאים לחיפוש." : "עוד אין כאן מתכונים. כל מתכון שתסדרי יישמר כאן אוטומטית, ואפשר לכבות את זה בהגדרות.") + "</div>";
+    return;
+  }
+  list.innerHTML = "";
+  items.forEach(b => {
+    const d = document.createElement("div"); d.className = "book-item";
+    const snip = b.text.split("\n").map(s => s.replace(/[#>*_-]/g, "").trim()).filter(Boolean).slice(1, 3).join(" · ");
+    d.innerHTML = '<div class="body" role="button" tabindex="0"><div class="t"></div><div class="snip"></div><div class="m"></div></div><button type="button" class="ghost danger">מחיקה</button>';
+    d.querySelector(".t").textContent = b.title;
+    d.querySelector(".snip").textContent = snip;
+    d.querySelector(".m").textContent = new Date(b.updated).toLocaleDateString("he-IL");
+    const open = () => { versions = []; $("btnUndo").hidden = true; setResult(b.text, { id: b.id }); setMode("preview"); showTab("convert"); setTimeout(() => $("resultPanel").scrollIntoView({ block: "start" }), 50); };
+    d.querySelector(".body").onclick = open;
+    d.querySelector(".body").onkeydown = (e) => { if (e.key === "Enter") open(); };
+    const del = d.querySelector("button");
+    del.onclick = () => {
+      if (del.dataset.armed) { book = book.filter(x => x.id !== b.id); if (currentId === b.id) currentId = null; saveBook(); renderBook(); toast("נמחק"); }
+      else { del.dataset.armed = "1"; del.textContent = "בטוח? למחוק"; setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.textContent = "מחיקה"; } }, 3500); }
+    };
+    list.appendChild(d);
+  });
+}
+
+/* ---------------- output actions ---------------- */
+function outText() {
+  const t = $("editor").value;
+  if (S.sharePlain && S.outputStyle === "markdown") return toPlain(t);
+  return t;
+}
+async function copyText(t) {
+  if (Native && Native.copy) { Native.copy(t); toast("הועתק"); return; }
+  try { await navigator.clipboard.writeText(t); toast("הועתק"); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("הועתק"); } catch (x) { toast("לא הצלחתי להעתיק"); } ta.remove(); }
+}
+async function shareText(t, title) {
+  if (Native && Native.share) { Native.share(t, title || ""); return; }
+  if (navigator.share) { try { await navigator.share({ title, text: t }); } catch (e) {} return; }
+  copyText(t);
+}
+function saveFile(name, mime, content) {
+  if (Native && Native.saveFile) { const r = Native.saveFile(name, mime, content); toast(r); return; }
+  const blob = new Blob([content], { type: mime + ";charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast("הקובץ ירד: " + name);
+}
+function exportAs(fmt) {
+  const t = $("editor").value.trim();
+  if (!t) { toast("אין מה לשמור"); return; }
+  if (fmt === "txt") saveFile(fileName(t, "txt"), "text/plain", S.outputStyle === "markdown" ? toPlain(t) : t);
+  else if (fmt === "md") saveFile(fileName(t, "md"), "text/markdown", t);
+  else if (fmt === "html") saveFile(fileName(t, "html"), "text/html", fullHtml(t));
+  else if (fmt === "pdf") {
+    if (Native && Native.printHtml) { Native.printHtml(fullHtml(t), fileName(t, "pdf").replace(/\.pdf$/, "")); }
+    else { const w = window.open("", "_blank"); if (w) { w.document.write(fullHtml(t)); w.document.close(); setTimeout(() => w.print(), 400); } else toast("PDF זמין באפליקציה"); }
+  }
+}
+
+/* ---------------- settings binding ---------------- */
+function applyTheme() {
+  const r = document.documentElement;
+  if (S.theme === "system") r.removeAttribute("data-theme"); else r.setAttribute("data-theme", S.theme);
+  r.style.setProperty("--fs", S.fontSize + "px");
+  if (Native && Native.setDark) { try { Native.setDark(S.theme); } catch (e) {} }
+}
+function fillSettings() {
+  document.querySelectorAll("[data-key]").forEach(el => {
+    const v = S[el.dataset.key];
+    if (el.type === "checkbox") el.checked = !!v; else el.value = v == null ? "" : v;
+    const o = $("o_" + el.dataset.key); if (o) o.textContent = fmtOut(el.dataset.key, v);
+  });
+  $("customPromptWrap").hidden = !S.customPromptOn;
+  refreshDerived();
+}
+function fmtOut(k, v) {
+  if (k === "fontSize") return v + "px";
+  if (k === "imageMaxPx") return v + "px";
+  if (k === "imageQuality") return Math.round(v * 100) + "%";
+  return String(v);
+}
+function refreshDerived() {
+  $("promptPreview").textContent = buildSystemPrompt();
+  $("modelBadge").textContent = S.apiKey ? modelName() : "חסר מפתח API";
+  $("exportFmt").value = S.exportFormat;
+  renderChips();
+  renderPreview();
+}
+function bindSettings() {
+  document.querySelectorAll("[data-key]").forEach(el => {
+    const ev = (el.type === "checkbox" || el.tagName === "SELECT") ? "change" : "input";
+    el.addEventListener(ev, () => {
+      const k = el.dataset.key;
+      let v = el.type === "checkbox" ? el.checked : el.value;
+      if (el.type === "range" || (el.type === "number" && k !== "scaleTo")) v = v === "" ? DEFAULTS[k] : Number(v);
+      S[k] = v; saveSettings();
+      const o = $("o_" + k); if (o) o.textContent = fmtOut(k, v);
+      if (k === "customPromptOn") $("customPromptWrap").hidden = !v;
+      if (k === "theme" || k === "fontSize") applyTheme();
+      refreshDerived();
+    });
+  });
+}
+function renderChips() {
+  const box = $("chips"); box.innerHTML = "";
+  (S.chips || "").split("\n").map(s => s.trim()).filter(Boolean).slice(0, 12).forEach(c => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = c;
+    b.onclick = () => refine(c); box.appendChild(b);
+  });
+}
+
+/* ---------------- tabs ---------------- */
+function showTab(name) {
+  ["convert", "book", "settings"].forEach(n => $("scr-" + n).hidden = n !== name);
+  document.querySelectorAll("nav.tabs button").forEach(b => b.toggleAttribute("aria-current", b.dataset.tab === name));
+  document.querySelectorAll("nav.tabs button[aria-current]").forEach(b => b.setAttribute("aria-current", "page"));
+  if (name === "book") renderBook();
+  window.scrollTo(0, 0);
+}
+
+/* ---------------- shared from other apps (Android) ---------------- */
+async function takeNativeShare() {
+  if (!Native || !Native.getPendingShare) return;
+  let raw = ""; try { raw = Native.getPendingShare(); } catch (e) { return; }
+  if (!raw) return;
+  let p; try { p = JSON.parse(raw); } catch (e) { return; }
+  showTab("convert");
+  if (p.text) { $("srcTextWrap").hidden = false; $("srcText").value = ($("srcText").value ? $("srcText").value + "\n\n" : "") + p.text; }
+  for (const u of (p.images || [])) { try { await addImageFromDataUrl(u); } catch (e) {} }
+  toast("התקבל מתכון לשיתוף");
+  if (S.autoRunShare && S.apiKey) run();
+}
+window.onNativeShare = takeNativeShare;
+
+/* ---------------- backup ---------------- */
+function backupJson() {
+  const s = Object.assign({}, S); if (!$("bkIncludeKey").checked) delete s.apiKey;
+  return JSON.stringify({ app: "matkonit", v: 1, settings: s, book }, null, 1);
+}
+function restore(txt) {
+  let j; try { j = JSON.parse(txt); } catch (e) { toast("הגיבוי לא תקין"); return; }
+  if (j.settings) S = Object.assign({}, DEFAULTS, S.apiKey ? { apiKey: S.apiKey } : {}, j.settings);
+  if (Array.isArray(j.book)) { const ids = new Set(book.map(b => b.id)); j.book.forEach(b => { if (!ids.has(b.id)) book.push(b); }); book.sort((a, b) => b.updated - a.updated); }
+  saveSettings(); saveBook(); fillSettings(); applyTheme(); renderBook(); toast("שוחזר");
+}
+
+/* ---------------- wire up ---------------- */
+function init() {
+  applyTheme(); fillSettings(); bindSettings();
+  if (draft && draft.text) setResult(draft.text, { id: draft.id });
+  else setResult(SAMPLE, { sample: true });
+  setMode(S.editorDefault === "edit" && !isSample ? "edit" : "preview");
+
+  document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+  $("btnPickImg").onclick = () => $("fileInput").click();
+  $("fileInput").onchange = async (e) => { await addFiles([...e.target.files]); e.target.value = ""; };
+  $("btnPasteText").onclick = () => { $("srcTextWrap").hidden = false; $("srcText").focus(); };
+  document.addEventListener("paste", async (e) => {
+    const files = [...(e.clipboardData ? e.clipboardData.files : [])].filter(f => f.type.startsWith("image/"));
+    if (files.length && !$("scr-convert").hidden) { e.preventDefault(); await addFiles(files); toast("התמונה נוספה"); }
+  });
+  $("btnRun").onclick = run;
+  $("btnAbort").onclick = () => busy && busy.abort();
+  $("segEdit").onclick = () => setMode("edit");
+  $("segPreview").onclick = () => setMode("preview");
+  $("editor").addEventListener("input", () => { if (isSample) { isSample = false; } saveDraft(); $("resultTitle").textContent = titleOf($("editor").value); });
+  $("btnCopy").onclick = () => copyText(outText());
+  $("btnShare").onclick = () => shareText(S.outputStyle === "markdown" && !S.sharePlain ? toWhatsapp($("editor").value) : outText(), titleOf($("editor").value));
+  $("btnExport").onclick = () => exportAs($("exportFmt").value);
+  $("btnSaveBook").onclick = () => saveToBook(false);
+  $("btnUndo").onclick = () => { const v = versions.pop(); if (v != null) { setResult(v, { keepId: true }); } $("btnUndo").hidden = !versions.length; };
+  $("btnClear").onclick = () => {
+    images = []; renderThumbs(); $("srcText").value = ""; $("srcTextWrap").hidden = true; $("oneNote").value = ""; $("oneScale").value = "";
+    versions = []; $("btnUndo").hidden = true; currentId = null; setResult("", {}); setMode("preview"); setStatus($("runStatus"), "");
+  };
+  $("btnRefine").onclick = () => refine($("refineText").value);
+  $("refineText").onkeydown = (e) => { if (e.key === "Enter") refine($("refineText").value); };
+  $("bookSearch").oninput = renderBook;
+
+  $("btnShowKey").onclick = () => { const k = $("s_apiKey"); k.type = k.type === "password" ? "text" : "password"; $("btnShowKey").textContent = k.type === "password" ? "הצגה" : "הסתרה"; };
+  $("btnPasteKey").onclick = async () => {
+    let t = "";
+    if (Native && Native.readClipboard) t = Native.readClipboard();
+    else { try { t = await navigator.clipboard.readText(); } catch (e) { toast("לחיצה ארוכה בשדה > הדבקה"); return; } }
+    t = (t || "").trim(); if (!t) { toast("הלוח ריק"); return; }
+    $("s_apiKey").value = t; $("s_apiKey").dispatchEvent(new Event("input")); toast("המפתח הודבק");
+  };
+  $("btnTestKey").onclick = async () => {
+    const st = $("connStatus"); setStatus(st, '<span class="spin"></span> בודקת...');
+    try {
+      const ac = withTimeout();
+      const r = await fetch(apiBase() + "models/" + encodeURIComponent(modelName()) + ":generateContent", { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey.trim() }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "ענה במילה אחת: עובד" }] }] }) });
+      ac.clear();
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) setStatus(st, esc(explainError(r.status, j)), true); else setStatus(st, "החיבור עובד עם " + esc(modelName()) + ".");
+    } catch (e) { setStatus(st, "אין חיבור לאינטרנט.", true); }
+  };
+  $("btnListModels").onclick = async () => {
+    const st = $("connStatus");
+    if (!S.apiKey.trim()) { setStatus(st, "קודם מדביקים מפתח.", true); return; }
+    setStatus(st, '<span class="spin"></span> טוענת...');
+    try {
+      const r = await fetch(apiBase() + "models?pageSize=200", { headers: { "x-goog-api-key": S.apiKey.trim() } });
+      const j = await r.json();
+      if (!r.ok) { setStatus(st, esc(explainError(r.status, j)), true); return; }
+      const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, "")).filter(n => /gemini/.test(n) && !/(tts|image|live|embedding|audio)/.test(n));
+      $("modelList").innerHTML = ms.map(n => '<option value="' + esc(n) + '">').join("");
+      setStatus(st, "נמצאו " + ms.length + " מודלים. לחצי על שדה המודל כדי לבחור.");
+    } catch (e) { setStatus(st, "אין חיבור לאינטרנט.", true); }
+  };
+  $("btnResetTemplate").onclick = () => { S.template = DEFAULT_TEMPLATE; saveSettings(); fillSettings(); toast("התבנית שוחזרה"); };
+  $("btnCopyBuilt").onclick = () => { const on = S.customPromptOn; S.customPromptOn = false; S.customPrompt = buildSystemPrompt(); S.customPromptOn = true; saveSettings(); fillSettings(); if (!on) toast("הפרומפט הועתק לעורך והופעל"); };
+  $("btnCopyGem").onclick = () => copyText(gemPrompt());
+  $("btnShareGem").onclick = () => shareText(gemPrompt(), "פרומפט למתכונים");
+  $("btnBackupSave").onclick = () => saveFile("matkonit-backup-" + dateStr() + ".json", "application/json", backupJson());
+  $("btnBackupCopy").onclick = () => copyText(backupJson());
+  $("restoreFile").onchange = async (e) => { const f = e.target.files[0]; if (f) { $("restoreText").value = await f.text(); } e.target.value = ""; };
+  $("btnRestore").onclick = () => restore($("restoreText").value);
+  $("btnResetSettings").onclick = () => $("resetConfirm").hidden = false;
+  $("btnResetNo").onclick = () => $("resetConfirm").hidden = true;
+  $("btnResetYes").onclick = () => { S = Object.assign({}, DEFAULTS, { apiKey: S.apiKey }); saveSettings(); fillSettings(); applyTheme(); $("resetConfirm").hidden = true; toast("ההגדרות אופסו"); };
+
+  if (!S.apiKey) setStatus($("runStatus"), "לפני ההתחלה: מדביקים מפתח Gemini בהגדרות.");
+  takeNativeShare();
+}
+init();
+</script>
+</body>
+</html>
