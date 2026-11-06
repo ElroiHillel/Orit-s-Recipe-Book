@@ -101,8 +101,12 @@ public class MainActivity extends Activity {
         if (web == null || !pageLoaded) { super.onBackPressed(); return; }
         // Let the page close a sheet or go back a screen first; leave the app only from the home screen.
         web.evaluateJavascript("(window.handleBack && window.handleBack()) ? 1 : 0", result -> {
-            if (!"1".equals(result)) MainActivity.super.onBackPressed();
+            if (!"1".equals(result)) leaveApp();
         });
+    }
+
+    private void leaveApp() {
+        super.onBackPressed();
     }
 
     // ---------------------------------------------------------------- web client
