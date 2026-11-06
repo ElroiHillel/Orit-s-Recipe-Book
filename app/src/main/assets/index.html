@@ -3,138 +3,181 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>מתכונית</title>
+<title>המתכונים של אורית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Fredoka:wght@400;500;600&family=Varela+Round&display=swap">
 <style>
-/* Layout: one-column kitchen notebook; screens switch via a fixed bottom bar. */
+/* Layout: soft one-column recipe journal. Rounded cards on a tinted ground, bottom tab bar, handwritten brand. */
 :root {
-  --paper: #F5F7F1;
+  --bg: #FFF5F6;
   --surface: #FFFFFF;
-  --ink: #1D2820;
-  --muted: #5D6A60;
-  --line: #D8E0D4;
-  --basil: #2E6A44;
-  --basil-soft: #E3EFE6;
-  --saffron: #D99A1E;
-  --danger: #B3261E;
-  --font-display: "Frank Ruhl Libre", "David", "Times New Roman", serif;
-  --font-body: "Assistant", "Segoe UI", Arial, sans-serif;
+  --ink: #3B2530;
+  --muted: #8C6F7B;
+  --line: #F2DCE3;
+  --accent: #D9577A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #FCE4EB;
+  --accent-2: #F0A35E;
+  --danger: #C0392B;
+  --shadow: 0 6px 20px -10px rgba(150, 60, 90, .35);
+  --font-brand: "Amatic SC", "Fredoka", cursive;
+  --font-display: "Fredoka", "Varela Round", Arial, sans-serif;
+  --font-body: "Varela Round", "Assistant", Arial, sans-serif;
   --fs: 16px;
-  --radius: 14px;
+  --radius: 22px;
   color-scheme: light;
 }
+:root[data-palette="lavender"] { --bg: #F8F5FE; --line: #E6DDF7; --accent: #8A63D2; --accent-soft: #EEE6FB; --accent-2: #E98BB0; --ink: #2E2540; --muted: #7D7192; --shadow: 0 6px 20px -10px rgba(90, 60, 150, .35); }
+:root[data-palette="peach"]    { --bg: #FFF6F0; --line: #F5E0D2; --accent: #E0784B; --accent-soft: #FDE8DC; --accent-2: #D9577A; --ink: #3D2A22; --muted: #8F7466; --shadow: 0 6px 20px -10px rgba(160, 90, 50, .35); }
+:root[data-palette="sage"]     { --bg: #F5F8F4; --line: #DCE7DA; --accent: #5E9467; --accent-soft: #E2EFE2; --accent-2: #E59A8C; --ink: #263229; --muted: #6F8174; --shadow: 0 6px 20px -10px rgba(60, 110, 70, .35); }
+
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #121814; --surface: #1A231D; --ink: #E6ECE4; --muted: #98A69B;
-    --line: #2B372F; --basil: #74C08F; --basil-soft: #1F3326; --saffron: #E7B44C; --danger: #F2867E;
-    color-scheme: dark;
-  }
+  :root:not([data-theme="light"]) { --bg: #1E151A; --surface: #2A1E25; --ink: #F7E8EE; --muted: #BFA2AE; --line: #3E2D36; --accent: #F28AA6; --accent-ink: #2A1E25; --accent-soft: #432A35; --accent-2: #F5B47A; --danger: #FF8A7A; --shadow: none; color-scheme: dark; }
+  :root:not([data-theme="light"])[data-palette="lavender"] { --bg: #18151F; --surface: #231E2D; --line: #352D44; --accent: #B79BF0; --accent-soft: #33294A; --accent-2: #F0A2C2; --ink: #EEE8FA; --muted: #A99CC0; }
+  :root:not([data-theme="light"])[data-palette="peach"]    { --bg: #1E1713; --surface: #2B201B; --line: #403028; --accent: #F59C74; --accent-soft: #48302A; --accent-2: #F28AA6; --ink: #F8EBE3; --muted: #C2A595; }
+  :root:not([data-theme="light"])[data-palette="sage"]     { --bg: #141A16; --surface: #1D2620; --line: #2D3A31; --accent: #8DC497; --accent-soft: #24382A; --accent-2: #F0A99C; --ink: #E6EFE7; --muted: #9DB1A2; }
 }
-:root[data-theme="dark"] {
-  --paper: #121814; --surface: #1A231D; --ink: #E6ECE4; --muted: #98A69B;
-  --line: #2B372F; --basil: #74C08F; --basil-soft: #1F3326; --saffron: #E7B44C; --danger: #F2867E;
-  color-scheme: dark;
-}
+:root[data-theme="dark"] { --bg: #1E151A; --surface: #2A1E25; --ink: #F7E8EE; --muted: #BFA2AE; --line: #3E2D36; --accent: #F28AA6; --accent-ink: #2A1E25; --accent-soft: #432A35; --accent-2: #F5B47A; --danger: #FF8A7A; --shadow: none; color-scheme: dark; }
+:root[data-theme="dark"][data-palette="lavender"] { --bg: #18151F; --surface: #231E2D; --line: #352D44; --accent: #B79BF0; --accent-soft: #33294A; --accent-2: #F0A2C2; --ink: #EEE8FA; --muted: #A99CC0; }
+:root[data-theme="dark"][data-palette="peach"]    { --bg: #1E1713; --surface: #2B201B; --line: #403028; --accent: #F59C74; --accent-soft: #48302A; --accent-2: #F28AA6; --ink: #F8EBE3; --muted: #C2A595; }
+:root[data-theme="dark"][data-palette="sage"]     { --bg: #141A16; --surface: #1D2620; --line: #2D3A31; --accent: #8DC497; --accent-soft: #24382A; --accent-2: #F0A99C; --ink: #E6EFE7; --muted: #9DB1A2; }
+
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
-  background: var(--paper); color: var(--ink);
-  font-family: var(--font-body); font-size: var(--fs); line-height: 1.55;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--fs); line-height: 1.6;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
   -webkit-tap-highlight-color: transparent;
 }
-main { max-width: 760px; margin: 0 auto; padding-block: 14px 24px;
+main { max-width: 720px; margin: 0 auto; padding-block: 18px 28px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .screen { display: flex; flex-direction: column; gap: 16px; }
-header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.9em; margin: 0; letter-spacing: -0.01em; }
-h1 span { color: var(--basil); }
-h2 { font-family: var(--font-display); font-size: 1.25em; margin: 0; text-wrap: balance; }
-.sub { color: var(--muted); font-size: .9em; }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+/* hero */
+.hero { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 4px 0; }
+.hero-text { display: flex; flex-direction: column; min-width: 0; }
+.greet { color: var(--muted); font-size: .95em; }
+.brand { font-family: var(--font-brand); font-weight: 700; font-size: 2.9em; line-height: 1; margin: 2px 0 0; color: var(--ink); text-wrap: balance; }
+.brand span { color: var(--accent); }
+.hero-art { width: 84px; height: 84px; flex: none; }
+.badge { align-self: flex-start; font-size: .78em; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; direction: ltr; margin-top: -6px; }
+header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 4px 4px 0; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: 1.75em; margin: 0; }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.2em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: .88em; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; box-shadow: var(--shadow); }
 .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.grow { flex: 1 1 160px; min-width: 0; }
-label.fld { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: .92em; }
-label.fld small, .hint { font-weight: 400; color: var(--muted); font-size: .85em; }
+.grow { flex: 1 1 150px; min-width: 0; }
+label.fld, div.fld { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .93em; }
+label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); font-size: .86em; }
 input[type=text], input[type=password], input[type=number], input[type=search], select, textarea {
-  font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
-  border-radius: 10px; padding: 10px 12px; width: 100%; min-width: 0;
+  font: inherit; font-weight: 400; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line);
+  border-radius: 14px; padding: 11px 14px; width: 100%; min-width: 0;
 }
-textarea { resize: vertical; line-height: 1.6; }
-input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--basil); outline-offset: 2px; }
-input[type=range] { width: 100%; accent-color: var(--basil); }
-button { font: inherit; cursor: pointer; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 14px; font-weight: 600; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { resize: vertical; line-height: 1.65; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 16px; font-weight: 600; }
+button:active { transform: scale(.98); }
 button:disabled { opacity: .5; cursor: default; }
-button.primary { background: var(--basil); border-color: var(--basil); color: var(--surface); font-size: 1.05em; padding: 13px 18px; }
-button.ghost { background: transparent; border-color: transparent; color: var(--basil); padding: 6px 8px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-size: 1.08em; padding: 14px 20px; font-family: var(--font-display); box-shadow: var(--shadow); }
+button.ghost { background: transparent; border-color: transparent; color: var(--accent); padding: 6px 10px; }
 button.danger { color: var(--danger); }
-button.chip { border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: .88em; background: var(--basil-soft); border-color: transparent; color: var(--ink); }
-.big-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.big-actions button { padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.big-actions button b { font-size: 1.5em; line-height: 1; color: var(--basil); }
+button.chip { padding: 7px 14px; font-size: .88em; background: var(--accent-soft); border-color: transparent; color: var(--ink); }
+
+.big-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.big-actions button { border-radius: 18px; padding: 18px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--accent-soft); border: 1.5px dashed var(--accent); font-family: var(--font-display); font-weight: 500; }
+.big-actions button b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--surface); color: var(--accent); font-size: 1.4em; line-height: 1; }
 .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
-.thumb { position: relative; width: 84px; height: 84px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.thumbs:empty { display: none; }
+.thumb { position: relative; width: 84px; height: 84px; border-radius: 16px; overflow: hidden; border: 2px solid var(--accent-soft); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.thumb button { position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; padding: 0; border-radius: 50%; line-height: 1; background: var(--surface); }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.seg button { border: 0; border-radius: 0; background: transparent; padding: 7px 14px; }
-.seg button[aria-pressed=true] { background: var(--basil-soft); color: var(--basil); }
+.thumb button { position: absolute; top: 4px; left: 4px; width: 26px; height: 26px; padding: 0; line-height: 1; background: var(--surface); border: 0; }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 6px 14px; font-size: .9em; }
+.seg button[aria-pressed=true] { background: var(--surface); color: var(--accent); box-shadow: var(--shadow); }
 .editor-wrap { min-width: 0; }
-#editor { min-height: 46vh; font-size: 1em; background: var(--surface); }
-#preview { min-height: 30vh; padding: 4px 2px; overflow-wrap: anywhere; }
-#preview h1, #preview h2, #preview h3 { font-family: var(--font-display); margin: .6em 0 .3em; line-height: 1.25; }
-#preview h1 { font-size: 1.7em; }
-#preview h2 { font-size: 1.2em; color: var(--basil); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
-#preview ul, #preview ol { padding-inline-start: 1.4em; margin: .3em 0; }
-#preview li { margin: .15em 0; }
-#preview ul li::marker { color: var(--saffron); }
-#preview ol li::marker { color: var(--basil); font-weight: 700; }
-#preview blockquote { margin: .2em 0 .6em; color: var(--muted); font-style: italic; }
-#preview p { margin: .4em 0; }
-#preview hr { border: 0; border-top: 1px dashed var(--line); }
+#editor { min-height: 46vh; background: var(--surface); }
+#preview { min-height: 30vh; padding: 2px; overflow-wrap: anywhere; }
+#preview h1, #preview h2, #preview h3 { font-family: var(--font-display); margin: .7em 0 .35em; line-height: 1.25; }
+#preview h1 { font-size: 1.65em; font-weight: 600; margin-top: .2em; }
+#preview h2 { font-size: 1.12em; display: inline-flex; align-items: center; gap: 8px; color: var(--accent); background: var(--accent-soft); padding: 3px 14px; border-radius: 999px; }
+#preview h3 { font-size: 1em; color: var(--muted); }
+#preview ul, #preview ol { padding-inline-start: 1.5em; margin: .3em 0 .6em; }
+#preview li { margin: .25em 0; padding-inline-start: .2em; }
+#preview ul { list-style: none; padding-inline-start: .4em; }
+#preview ul li { position: relative; padding-inline-start: 1.3em; }
+#preview ul li::before { content: ""; position: absolute; inset-inline-start: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); }
+#preview ol li::marker { color: var(--accent); font-weight: 700; font-family: var(--font-display); }
+#preview blockquote { margin: .2em 0 .7em; color: var(--muted); }
+#preview p { margin: .45em 0; }
+#preview hr { border: 0; border-top: 2px dotted var(--line); margin: 1em 0; }
 #preview .plain { white-space: pre-wrap; }
-.sample-tag { display: inline-block; background: var(--saffron); color: #1D2820; font-size: .75em; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; }
+#preview strong { color: var(--ink); }
+.sample-tag { display: inline-block; background: var(--accent-2); color: #3B2530; font-size: .74em; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .status { font-size: .92em; color: var(--muted); }
+.status:empty { display: none; }
 .status.err { color: var(--danger); font-weight: 600; }
-.spin { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-left-color: transparent; border-radius: 50%; animation: sp 0.8s linear infinite; vertical-align: -2px; }
+.spin { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-left-color: transparent; border-radius: 50%; animation: sp .8s linear infinite; vertical-align: -2px; }
 @keyframes sp { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
-.book-item { display: flex; gap: 10px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } button:active { transform: none; } }
+
+.refine { background: var(--bg); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+.book-item { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); }
 .book-item:last-child { border-bottom: 0; }
-.book-item .t { font-family: var(--font-display); font-weight: 700; font-size: 1.08em; }
-.book-item .m { color: var(--muted); font-size: .85em; }
+.book-item::before { content: ""; flex: none; width: 10px; height: 44px; border-radius: 999px; background: var(--accent-soft); }
+.book-item .t { font-family: var(--font-display); font-weight: 600; font-size: 1.05em; }
+.book-item .m { color: var(--muted); font-size: .82em; }
 .book-item .body { flex: 1; min-width: 0; cursor: pointer; }
-.book-item .snip { color: var(--muted); font-size: .88em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book-item .snip { color: var(--muted); font-size: .86em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .empty { text-align: center; color: var(--muted); padding: 24px 8px; }
-details.sect { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
-details.sect > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+details.sect { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+details.sect > summary { list-style: none; cursor: pointer; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 details.sect > summary::-webkit-details-marker { display: none; }
-details.sect > summary h2 { font-size: 1.1em; }
-details.sect > summary::after { content: "+"; color: var(--basil); font-weight: 700; font-size: 1.3em; }
+details.sect > summary h2 { font-size: 1.08em; }
+details.sect > summary::after { content: "+"; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; flex: none; }
 details.sect[open] > summary::after { content: "−"; }
-details.sect .inner { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 14px; }
-.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+details.sect .inner { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 2px 0; }
 .toggle span { min-width: 0; }
-.toggle input { width: 22px; height: 22px; accent-color: var(--basil); flex: none; }
+.toggle input { appearance: none; -webkit-appearance: none; flex: none; width: 44px; height: 26px; border-radius: 999px; background: var(--line); position: relative; cursor: pointer; transition: background .2s; margin: 0; }
+.toggle input::after { content: ""; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: right .2s; }
+.toggle input:checked { background: var(--accent); }
+.toggle input:checked::after { right: 21px; }
+.toggle input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .range-head { display: flex; justify-content: space-between; }
-.range-head output { font-variant-numeric: tabular-nums; color: var(--basil); font-weight: 700; }
-code.k { font-family: ui-monospace, monospace; font-size: .85em; background: var(--basil-soft); padding: 1px 5px; border-radius: 5px; direction: ltr; unicode-bidi: isolate; }
+.range-head output { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; }
+code.k { font-family: ui-monospace, monospace; font-size: .85em; background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; direction: ltr; unicode-bidi: isolate; }
 .ltr { direction: ltr; text-align: left; }
-pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .85em; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px; max-height: 260px; overflow: auto; margin: 0; }
-.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--basil-soft); border-radius: 10px; padding: 8px 10px; font-size: .9em; }
+pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-weight: 400; font-size: .84em; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 12px; max-height: 260px; overflow: auto; margin: 0; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--accent-soft); border-radius: 14px; padding: 10px 12px; font-size: .9em; }
+.swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.swatches button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border-radius: 16px; font-size: .85em; font-weight: 500; }
+.swatches button i { width: 30px; height: 30px; border-radius: 50%; display: block; }
+.swatches [data-pal=rose] i { background: linear-gradient(135deg, #D9577A 50%, #F0A35E 50%); }
+.swatches [data-pal=lavender] i { background: linear-gradient(135deg, #8A63D2 50%, #E98BB0 50%); }
+.swatches [data-pal=peach] i { background: linear-gradient(135deg, #E0784B 50%, #D9577A 50%); }
+.swatches [data-pal=sage] i { background: linear-gradient(135deg, #5E9467 50%, #E59A8C 50%); }
+.swatches button[aria-pressed=true] { border-color: var(--accent); background: var(--accent-soft); }
+
 nav.tabs {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr);
-  background: var(--surface); border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+  background: var(--surface); border-top: 1px solid var(--line); border-radius: 22px 22px 0 0; box-shadow: 0 -6px 20px -12px rgba(0,0,0,.25);
+  padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
 }
-nav.tabs button { border: 0; border-radius: 0; background: transparent; padding: 10px 4px 12px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .85em; }
-nav.tabs button svg { width: 24px; height: 24px; }
-nav.tabs button[aria-current=page] { color: var(--basil); }
-#toast { position: fixed; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 999px; font-size: .92em; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
-.sticky-actions { position: sticky; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+nav.tabs button { border: 0; background: transparent; padding: 6px 4px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .82em; border-radius: 16px; }
+nav.tabs button svg { width: 24px; height: 24px; padding: 2px 14px; box-sizing: content-box; border-radius: 999px; }
+nav.tabs button[aria-current=page] { color: var(--accent); }
+nav.tabs button[aria-current=page] svg { background: var(--accent-soft); }
+#toast { position: fixed; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: .92em; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
 </style>
 </head>
 <body>
@@ -142,10 +185,20 @@ nav.tabs button[aria-current=page] { color: var(--basil); }
 
 <!-- ============ CONVERT ============ -->
 <section class="screen" id="scr-convert">
-  <header class="top">
-    <h1>מתכו<span>נית</span></h1>
-    <span class="sub" id="modelBadge"></span>
+  <header class="hero">
+    <div class="hero-text">
+      <span class="greet" id="greet">שלום אורית</span>
+      <h1 class="brand">המתכונים של <span>אורית</span></h1>
+    </div>
+    <svg class="hero-art" viewBox="0 0 96 96" aria-hidden="true">
+      <circle cx="48" cy="52" r="38" fill="var(--accent-soft)"/>
+      <path d="M22 50h52a26 26 0 0 1-52 0z" fill="var(--accent)"/>
+      <path d="M18 50h60" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M40 38c-3-5 3-8 0-13M50 36c-3-5 3-8 0-13M60 38c-3-5 3-8 0-13" stroke="var(--accent-2)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="40" cy="62" r="3" fill="var(--surface)" opacity=".7"/>
+    </svg>
   </header>
+  <span class="badge" id="modelBadge"></span>
 
   <div class="panel" id="inputPanel">
     <div class="big-actions">
@@ -198,7 +251,7 @@ nav.tabs button[aria-current=page] { color: var(--basil); }
       <button type="button" class="ghost" id="btnUndo" hidden>לגרסה הקודמת</button>
       <button type="button" class="ghost danger" id="btnClear">ניקוי</button>
     </div>
-    <div class="panel" style="background:var(--paper)">
+    <div class="refine">
       <label class="fld">לשנות משהו? <small>ג'ימיני יעדכן את המתכון שבעורך</small>
         <div class="row">
           <input type="text" id="refineText" class="grow" placeholder="למשל: תכפילי את הכמויות">
@@ -224,26 +277,28 @@ nav.tabs button[aria-current=page] { color: var(--basil); }
   <details class="sect" open>
     <summary><h2>חיבור לג'ימיני</h2></summary>
     <div class="inner">
-      <label class="fld">מפתח API של Gemini
+      <div class="fld">מפתח API של Gemini
         <small>יוצרים בחינם ב־<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. המפתח נשמר רק בטלפון.</small>
+        <input type="password" id="s_apiKey" data-key="apiKey" class="ltr" autocomplete="off" placeholder="AIza..." aria-label="מפתח API">
         <div class="row">
-          <input type="password" id="s_apiKey" data-key="apiKey" class="grow ltr" autocomplete="off" placeholder="AIza...">
-          <button type="button" id="btnShowKey">הצגה</button>
           <button type="button" id="btnPasteKey">הדבקה</button>
+          <button type="button" id="btnShowKey">הצגה</button>
         </div>
-      </label>
-      <label class="fld">מודל
+      </div>
+      <label class="fld" for="modelSel">מודל ראשי
         <small>flash מהיר וזול, pro מדויק יותר ואיטי יותר</small>
-        <input type="text" id="s_model" data-key="model" list="modelList" class="ltr" autocomplete="off">
-        <datalist id="modelList">
-          <option value="gemini-3.8-flash">
-          <option value="gemini-3.5-flash-lite">
-          <option value="gemini-3.6-flash">
-          <option value="gemini-4-argon">
-        </datalist>
+      </label>
+      <select id="modelSel" class="ltr"></select>
+      <input type="text" id="modelCustom" class="ltr" autocomplete="off" placeholder="שם מודל, למשל gemini-3.8-flash" hidden>
+      <label class="fld" for="fallbackSel">מודל גיבוי <small>נכנס לפעולה כשהראשי עמוס (שגיאה 503) או חסום במכסה</small></label>
+      <select id="fallbackSel" class="ltr"></select>
+      <label class="fld">ניסיונות חוזרים לפני מעבר לגיבוי
+        <select id="s_retries" data-key="retries">
+          <option value="0">בלי</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        </select>
       </label>
       <div class="row">
-        <button type="button" id="btnListModels">טעינת רשימת מודלים מהחשבון</button>
+        <button type="button" id="btnListModels">טעינת המודלים מהחשבון</button>
         <button type="button" id="btnTestKey">בדיקת חיבור</button>
       </div>
       <div class="status" id="connStatus"></div>
@@ -391,10 +446,18 @@ nav.tabs button[aria-current=page] { color: var(--basil); }
   <details class="sect">
     <summary><h2>תצוגה</h2></summary>
     <div class="inner">
-      <label class="fld">ערכת צבעים
+      <div class="fld">צבע
+        <div class="swatches" id="swatches">
+          <button type="button" data-pal="rose" aria-label="ורוד"><i></i>ורוד</button>
+          <button type="button" data-pal="lavender" aria-label="לבנדר"><i></i>לבנדר</button>
+          <button type="button" data-pal="peach" aria-label="אפרסק"><i></i>אפרסק</button>
+          <button type="button" data-pal="sage" aria-label="מרווה"><i></i>מרווה</button>
+        </div>
+      </div>
+      <label class="fld">מצב בהיר או כהה
         <select id="s_theme" data-key="theme">
           <option value="system">לפי הטלפון</option>
-          <option value="light">בהירה</option>
+          <option value="light">בהיר</option>
           <option value="dark">כהה</option>
         </select>
       </label>
@@ -440,7 +503,7 @@ nav.tabs button[aria-current=page] { color: var(--basil); }
       </div>
     </div>
   </details>
-  <p class="hint" style="text-align:center">מתכונית 1.0</p>
+  <p class="hint" style="text-align:center">המתכונים של אורית 1.1</p>
 </section>
 </main>
 
@@ -492,7 +555,8 @@ const DEFAULTS = {
   outputStyle: "markdown", template: DEFAULT_TEMPLATE, extra: "", chips: DEFAULT_CHIPS,
   customPromptOn: false, customPrompt: "",
   exportFormat: "txt", fileNamePattern: "{title}", autoSave: true, autoRunShare: true, sharePlain: false,
-  theme: "system", fontSize: 16, editorDefault: "preview"
+  theme: "system", palette: "rose", fontSize: 16, editorDefault: "preview",
+  fallbackModel: "gemini-3.5-flash-lite", retries: "2", modelList: []
 };
 
 const SAMPLE = `# שקשוקה ביתית
@@ -601,9 +665,9 @@ function toWhatsapp(src) {
 function fullHtml(text) {
   const style = S.outputStyle;
   return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(titleOf(text))}</title>
-<style>body{font-family:Assistant,Arial,sans-serif;max-width:680px;margin:32px auto;padding:0 20px;line-height:1.6;color:#1D2820}
-h1,h2,h3{font-family:"Frank Ruhl Libre",David,serif;line-height:1.25}h1{font-size:28px;margin:0 0 6px}h2{font-size:19px;color:#2E6A44;border-bottom:1px solid #D8E0D4;padding-bottom:4px;margin-top:22px}
-blockquote{margin:0 0 12px;color:#5D6A60;font-style:italic}ul li::marker{color:#D99A1E}ol li::marker{color:#2E6A44;font-weight:700}li{margin:3px 0}.plain{white-space:pre-wrap}
+<style>body{font-family:"Varela Round",Assistant,Arial,sans-serif;max-width:680px;margin:32px auto;padding:0 20px;line-height:1.6;color:#3B2530}
+h1,h2,h3{font-family:Fredoka,"Varela Round",Arial,sans-serif;line-height:1.25}h1{font-size:28px;margin:0 0 6px}h2{font-size:18px;color:#D9577A;margin-top:22px}
+blockquote{margin:0 0 12px;color:#5D6A60;font-style:italic}ul li::marker{color:#F0A35E}ol li::marker{color:#D9577A;font-weight:700}li{margin:3px 0}.plain{white-space:pre-wrap}
 @page{margin:16mm}</style></head><body>${mdToHtml(text, style)}</body></html>`;
 }
 
@@ -652,14 +716,38 @@ function currentScale() { const v = $("oneScale").value || S.scaleTo; const n = 
 /* ---------------- gemini ---------------- */
 function modelName() { return (S.model || DEFAULTS.model).trim().replace(/^models\//, ""); }
 function apiBase() { return "https://generativelanguage.googleapis.com/v1beta/"; }
+const KNOWN_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-4-argon"];
+const sleep = (ms, signal) => new Promise((ok, bad) => { const t = setTimeout(ok, ms); if (signal) signal.addEventListener("abort", () => { clearTimeout(t); bad(Object.assign(new Error("abort"), { name: "AbortError" })); }, { once: true }); });
+let onAttempt = null;  // UI hook: (model, attemptNo) => void
 async function gemini(contents, signal) {
   if (!S.apiKey.trim()) throw new Error("NOKEY");
+  const primary = modelName();
+  const fb = (S.fallbackModel || "").trim().replace(/^models\//, "");
+  const tries = Number(S.retries) || 0;
+  let lastErr;
+  for (let i = 0; i <= tries; i++) {
+    try { onAttempt && onAttempt(primary, i); return await geminiOnce(primary, contents, signal); }
+    catch (e) {
+      lastErr = e;
+      if (e.name === "AbortError" || !e.retryable) throw e;
+      if (i < tries) await sleep(1500 * Math.pow(2, i), signal);
+    }
+  }
+  if (fb && fb !== primary) {
+    onAttempt && onAttempt(fb, -1);
+    const r = await geminiOnce(fb, contents, signal);
+    r.usedFallback = fb;
+    return r;
+  }
+  throw lastErr;
+}
+async function geminiOnce(model, contents, signal) {
   const gen = { temperature: Number(S.temperature), topP: Number(S.topP), maxOutputTokens: Number(S.maxTokens) };
   if (S.thinking !== "default") gen.thinkingConfig = { thinkingLevel: S.thinking };
   const body = { systemInstruction: { parts: [{ text: buildSystemPrompt() }] }, contents, generationConfig: gen };
   let res;
   try {
-    res = await fetch(apiBase() + "models/" + encodeURIComponent(modelName()) + ":generateContent", {
+    res = await fetch(apiBase() + "models/" + encodeURIComponent(model) + ":generateContent", {
       method: "POST", signal, headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey.trim() }, body: JSON.stringify(body)
     });
   } catch (e) {
@@ -667,7 +755,7 @@ async function gemini(contents, signal) {
     throw new Error("אין חיבור לאינטרנט, או שהשרת לא זמין. נסי שוב.");
   }
   const j = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(explainError(res.status, j));
+  if (!res.ok) { const er = new Error(explainError(res.status, j, model)); er.retryable = res.status === 503 || res.status === 429 || res.status === 500; throw er; }
   const c = (j.candidates || [])[0];
   if (!c) {
     const br = j.promptFeedback && j.promptFeedback.blockReason;
@@ -678,14 +766,15 @@ async function gemini(contents, signal) {
   return { text: stripFences(text), cut: c.finishReason === "MAX_TOKENS" };
 }
 function stripFences(t) { const m = t.match(/^```[a-z]*\n([\s\S]*?)\n```$/i); return m ? m[1].trim() : t; }
-function explainError(status, j) {
+function explainError(status, j, model) {
+  model = model || modelName();
   const msg = (j.error && j.error.message) || "";
   if (status === 400 && /api key/i.test(msg)) return "מפתח ה־API לא תקין. בדקי אותו בהגדרות.";
   if (status === 400 && /thinking/i.test(msg)) return "המודל לא תומך ברמת החשיבה שנבחרה. בהגדרות > מנוע, החזירי ל'ברירת מחדל'.";
   if (status === 403) return "למפתח אין הרשאה למודל הזה. בדקי את המפתח או בחרי מודל אחר.";
-  if (status === 404) return "המודל \"" + modelName() + "\" לא נמצא. בהגדרות לחצי 'טעינת רשימת מודלים' ובחרי אחד.";
+  if (status === 404) return "המודל \"" + model + "\" לא נמצא. בהגדרות לחצי 'טעינת רשימת מודלים' ובחרי אחד.";
   if (status === 429) return "הגעת למכסת השימוש של ג'ימיני. חכי דקה ונסי שוב, או בחרי מודל flash-lite.";
-  if (status >= 500) return "השרת של ג'ימיני עמוס כרגע (" + status + "). נסי שוב עוד רגע.";
+  if (status >= 500) return "השרת של ג'ימיני עמוס כרגע (" + status + ", " + model + "). נסי שוב עוד רגע, או בחרי מודל גיבוי אחר בהגדרות.";
   return "שגיאה " + status + ": " + msg.slice(0, 200);
 }
 function withTimeout() {
@@ -773,12 +862,13 @@ async function callAndShow(contents, label, isRefine) {
   $("btnRun").disabled = true; $("btnRefine").disabled = true; $("btnAbort").hidden = false;
   setStatus($("runStatus"), '<span class="spin"></span> ' + label + " (" + esc(modelName()) + ")");
   const t0 = Date.now();
+  onAttempt = (m, i) => setStatus($("runStatus"), '<span class="spin"></span> ' + (i === -1 ? "הראשי עמוס, עוברת למודל הגיבוי" : i > 0 ? "השרת עמוס, מנסה שוב (" + i + ")" : label) + " (" + esc(m) + ")");
   try {
     const r = await gemini(contents, busy.signal);
     if (!isSample && $("editor").value.trim()) pushVersion();
     setResult(r.text, { keepId: isRefine });
     setMode(S.editorDefault);
-    let s = "מוכן תוך " + Math.round((Date.now() - t0) / 1000) + " שניות.";
+    let s = "מוכן תוך " + Math.round((Date.now() - t0) / 1000) + " שניות" + (r.usedFallback ? " (עם מודל הגיבוי " + esc(r.usedFallback) + ")." : ".");
     if (r.cut) s += " שימי לב: התשובה נחתכה, כדאי להגדיל את האורך המקסימלי בהגדרות.";
     setStatus($("runStatus"), s, r.cut);
     if (isRefine) $("refineText").value = "";
@@ -873,6 +963,8 @@ function exportAs(fmt) {
 function applyTheme() {
   const r = document.documentElement;
   if (S.theme === "system") r.removeAttribute("data-theme"); else r.setAttribute("data-theme", S.theme);
+  r.setAttribute("data-palette", S.palette || "rose");
+  document.querySelectorAll("#swatches button").forEach(b => b.setAttribute("aria-pressed", b.dataset.pal === (S.palette || "rose")));
   r.style.setProperty("--fs", S.fontSize + "px");
   if (Native && Native.setDark) { try { Native.setDark(S.theme); } catch (e) {} }
 }
@@ -883,7 +975,20 @@ function fillSettings() {
     const o = $("o_" + el.dataset.key); if (o) o.textContent = fmtOut(el.dataset.key, v);
   });
   $("customPromptWrap").hidden = !S.customPromptOn;
+  renderModelPickers();
   refreshDerived();
+}
+function modelOptions() {
+  const all = [];
+  [...KNOWN_MODELS, ...(S.modelList || []), S.model, S.fallbackModel].forEach(m => { m = (m || "").trim(); if (m && !all.includes(m)) all.push(m); });
+  return all;
+}
+function renderModelPickers() {
+  const opts = modelOptions();
+  const html = (cur) => opts.map(m => '<option value="' + esc(m) + '"' + (m === cur ? " selected" : "") + ">" + esc(m) + "</option>").join("") + '<option value="__other">אחר, להקליד שם...</option>';
+  $("modelSel").innerHTML = html(modelName());
+  $("fallbackSel").innerHTML = '<option value=""' + (S.fallbackModel ? "" : " selected") + '>בלי גיבוי</option>' + html(S.fallbackModel);
+  $("modelCustom").hidden = true;
 }
 function fmtOut(k, v) {
   if (k === "fontSize") return v + "px";
@@ -1016,21 +1121,37 @@ function init() {
       const j = await r.json();
       if (!r.ok) { setStatus(st, esc(explainError(r.status, j)), true); return; }
       const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, "")).filter(n => /gemini/.test(n) && !/(tts|image|live|embedding|audio)/.test(n));
-      $("modelList").innerHTML = ms.map(n => '<option value="' + esc(n) + '">').join("");
-      setStatus(st, "נמצאו " + ms.length + " מודלים. לחצי על שדה המודל כדי לבחור.");
+      ms.sort((a, b) => b.localeCompare(a, "en", { numeric: true }));
+      S.modelList = ms; saveSettings(); renderModelPickers();
+      setStatus(st, "נטענו " + ms.length + " מודלים. בחרי מהרשימה למעלה.");
     } catch (e) { setStatus(st, "אין חיבור לאינטרנט.", true); }
   };
   $("btnResetTemplate").onclick = () => { S.template = DEFAULT_TEMPLATE; saveSettings(); fillSettings(); toast("התבנית שוחזרה"); };
   $("btnCopyBuilt").onclick = () => { const on = S.customPromptOn; S.customPromptOn = false; S.customPrompt = buildSystemPrompt(); S.customPromptOn = true; saveSettings(); fillSettings(); if (!on) toast("הפרומפט הועתק לעורך והופעל"); };
   $("btnCopyGem").onclick = () => copyText(gemPrompt());
   $("btnShareGem").onclick = () => shareText(gemPrompt(), "פרומפט למתכונים");
-  $("btnBackupSave").onclick = () => saveFile("matkonit-backup-" + dateStr() + ".json", "application/json", backupJson());
+  $("btnBackupSave").onclick = () => saveFile("orit-recipes-backup-" + dateStr() + ".json", "application/json", backupJson());
   $("btnBackupCopy").onclick = () => copyText(backupJson());
   $("restoreFile").onchange = async (e) => { const f = e.target.files[0]; if (f) { $("restoreText").value = await f.text(); } e.target.value = ""; };
   $("btnRestore").onclick = () => restore($("restoreText").value);
   $("btnResetSettings").onclick = () => $("resetConfirm").hidden = false;
   $("btnResetNo").onclick = () => $("resetConfirm").hidden = true;
   $("btnResetYes").onclick = () => { S = Object.assign({}, DEFAULTS, { apiKey: S.apiKey }); saveSettings(); fillSettings(); applyTheme(); $("resetConfirm").hidden = true; toast("ההגדרות אופסו"); };
+
+  $("modelSel").onchange = () => {
+    const v = $("modelSel").value;
+    if (v === "__other") { $("modelCustom").hidden = false; $("modelCustom").value = ""; $("modelCustom").focus(); return; }
+    S.model = v; saveSettings(); refreshDerived(); toast("המודל עודכן");
+  };
+  $("modelCustom").onchange = () => { const v = $("modelCustom").value.trim(); if (v) { S.model = v; saveSettings(); renderModelPickers(); refreshDerived(); toast("המודל עודכן"); } };
+  $("fallbackSel").onchange = () => {
+    const v = $("fallbackSel").value;
+    if (v === "__other") { $("fallbackSel").value = S.fallbackModel; toast("להקלדה ידנית: בחרי 'אחר' במודל הראשי"); return; }
+    S.fallbackModel = v; saveSettings(); toast(v ? "מודל הגיבוי עודכן" : "בלי מודל גיבוי");
+  };
+  document.querySelectorAll("#swatches button").forEach(b => b.onclick = () => { S.palette = b.dataset.pal; saveSettings(); applyTheme(); });
+  const h = new Date().getHours();
+  $("greet").textContent = (h < 5 ? "לילה טוב" : h < 12 ? "בוקר טוב" : h < 17 ? "צהריים טובים" : h < 21 ? "ערב טוב" : "לילה טוב") + ", אורית";
 
   if (!S.apiKey) setStatus($("runStatus"), "לפני ההתחלה: מדביקים מפתח Gemini בהגדרות.");
   takeNativeShare();
