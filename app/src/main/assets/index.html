@@ -136,6 +136,8 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 .status { font-size: .92em; color: var(--muted); }
 .status:empty { display: none; }
 .status.err { color: var(--danger); font-weight: 600; }
+.status details { margin-top: 6px; color: var(--muted); }
+.status summary { cursor: pointer; }
 .spin { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-left-color: transparent; border-radius: 50%; animation: sp .8s linear infinite; vertical-align: -2px; }
 @keyframes sp { to { transform: rotate(360deg); } }
 
@@ -284,24 +286,33 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 .confetti i:nth-child(7) { left: 68%; animation-delay: .15s; } .confetti i:nth-child(8) { left: 78%; animation-delay: .4s; } .confetti i:nth-child(9) { left: 88%; animation-delay: .1s; } .confetti i:nth-child(10) { left: 94%; animation-delay: .3s; }
 @keyframes fall { to { transform: translateY(240px) rotate(540deg); opacity: 0; } }
 
-/* ---- compare ---- */
-.cmp { display: flex; flex-direction: column; gap: 14px; }
-.cmp-photo { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 5; background: var(--desk); border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
-.cmp-imgs { --zoom: 1; height: 40vh; overflow: auto; display: flex; flex-direction: column; gap: 6px; padding: 6px; direction: ltr; -webkit-overflow-scrolling: touch; }
+/* ---- compare: photo pane + editor pane, sized to the visible screen (shrinks with the keyboard) ---- */
+#v-compare { padding-bottom: 10px; gap: 0; }
+.cmp { --split: 42%; display: flex; flex-direction: column; height: calc(var(--vvh, 100vh) - 66px - env(safe-area-inset-top, 0px)); min-height: 300px; }
+.cmp-photo { position: relative; flex: 0 0 var(--split); min-height: 64px; background: var(--desk); border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; transition: flex-basis .25s; }
+.cmp.typing .cmp-photo { flex-basis: min(var(--split), 32%); }
+.cmp.nophoto .cmp-photo, .cmp.nophoto .cmp-handle { display: none; }
+.cmp-imgs { --zoom: 1; height: 100%; overflow: auto; display: flex; flex-direction: column; gap: 6px; padding: 6px; direction: ltr; -webkit-overflow-scrolling: touch; }
 .cmp-imgs img { width: calc(var(--zoom) * 100%); max-width: none; flex: none; border-radius: 10px; display: block; }
 .cmp-empty { direction: rtl; color: var(--muted); padding: 10px; font-size: .9em; }
 .cmp-empty pre { white-space: pre-wrap; font-family: var(--font-body); color: var(--ink); }
 .cmp-zoom { position: absolute; bottom: 8px; left: 8px; display: flex; align-items: center; gap: 2px; background: var(--surface); border-radius: 999px; box-shadow: var(--shadow); padding: 2px; }
 .cmp-zoom .icon-btn { width: 34px; height: 34px; font-size: 1.2em; font-weight: 700; }
 .cmp-zoom output { min-width: 46px; text-align: center; font-size: .8em; font-variant-numeric: tabular-nums; }
-.cmp-edit { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-#cmpText { min-height: 45vh; font-size: .95em; }
+.cmp-handle { flex: none; height: 24px; display: grid; place-items: center; cursor: row-resize; touch-action: none; }
+.cmp-handle i { width: 54px; height: 6px; border-radius: 999px; background: var(--line); }
+.cmp-handle:active i { background: var(--accent); }
+.cmp-edit { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.cmp-edit > .row { flex-wrap: nowrap; }
+button.primary.sm { padding: 8px 18px; font-size: .95em; }
+#cmpTogglePhoto { color: var(--accent); }
+.cmp.typing #cmpHint { display: none; }
+#cmpText { flex: 1 1 auto; min-height: 90px; resize: none; font-size: .95em; }
 @media (min-width: 720px) {
-  .cmp { flex-direction: row; align-items: flex-start; }
-  .cmp-photo { flex: 1 1 50%; }
-  .cmp-imgs { height: calc(100vh - 110px); }
+  .cmp { flex-direction: row; gap: 14px; }
+  .cmp-photo, .cmp.typing .cmp-photo { flex: 1 1 50%; }
+  .cmp-handle { display: none; }
   .cmp-edit { flex: 1 1 50%; }
-  #cmpText { min-height: calc(100vh - 220px); }
 }
 
 /* ---- settings ---- */
@@ -426,7 +437,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     </div>
     <section class="notes">
       <h3>✎ ההערות שלי</h3>
-      <textarea id="rNotes" rows="3" placeholder="למשל: בפעם הבאה פחות סוכר, הילדים אהבו"></textarea>
+      <textarea id="rNotes" dir="rtl" lang="he" rows="3" placeholder="למשל: בפעם הבאה פחות סוכר, הילדים אהבו"></textarea>
       <small>נשמר אוטומטית. לא חלק מהמתכון ולא נשלח בשיתוף.</small>
     </section>
   </section>
@@ -445,7 +456,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
       <p class="hint" style="margin:0">מתכון על כמה עמודים? מצלמים או בוחרים כמה תמונות, והן יחוברו למתכון אחד. צילום ישר מלמעלה ובאור טוב משפר מאוד את הדיוק.</p>
       <div class="thumbs" id="thumbs"></div>
       <label class="fld" id="srcTextWrap" hidden>טקסט המתכון
-        <textarea id="srcText" rows="6" placeholder="הדביקי כאן את המתכון"></textarea>
+        <textarea id="srcText" dir="rtl" lang="he" rows="6" placeholder="הדביקי כאן את המתכון"></textarea>
       </label>
       <div class="row">
         <label class="fld grow">כמות מנות רצויה <small>ריק = כמו במקור</small>
@@ -472,7 +483,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
       </div>
       <button type="button" class="primary" id="btnSaveEdit">שמירה</button>
     </div>
-    <textarea id="editText" spellcheck="true" aria-label="טקסט המתכון"></textarea>
+    <textarea id="editText" dir="rtl" lang="he" spellcheck="true" autocomplete="off" aria-label="טקסט המתכון"></textarea>
     <div class="recipe" id="editPreview" hidden></div>
     <p class="hint">כותרת עם # בשורה הראשונה, ## לסעיפים, - למצרכים, 1. לשלבים.</p>
   </section>
@@ -504,21 +515,25 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
 
   <!-- ============ COMPARE ============ -->
   <section class="view" id="v-compare" hidden>
-    <div class="cmp">
+    <div class="cmp" id="cmp">
       <div class="cmp-photo">
         <div class="cmp-imgs" id="cmpImgs"></div>
         <div class="cmp-zoom"><button type="button" class="icon-btn" id="cmpZoomOut" aria-label="הקטנה">−</button><output id="cmpZoomVal">100%</output><button type="button" class="icon-btn" id="cmpZoomIn" aria-label="הגדלה">+</button></div>
       </div>
+      <div class="cmp-handle" id="cmpHandle" role="separator" aria-label="גרירה לשינוי גודל הצילום"><i></i></div>
       <div class="cmp-edit">
         <div class="row" style="justify-content:space-between">
           <div class="seg" role="group" aria-label="מה עורכים">
             <button type="button" id="cmpSegText" aria-pressed="true">המתכון</button>
             <button type="button" id="cmpSegSrc" aria-pressed="false">התמלול</button>
           </div>
-          <button type="button" class="primary" id="cmpSave">שמירה</button>
+          <span class="row" style="gap:4px;flex-wrap:nowrap">
+            <button type="button" class="icon-btn" id="cmpTogglePhoto" aria-label="הסתרת הצילום" title="הסתרת הצילום"></button>
+            <button type="button" class="primary sm" id="cmpSave">שמירה</button>
+          </span>
         </div>
         <p class="hint" id="cmpHint" style="margin:0"></p>
-        <textarea id="cmpText" spellcheck="true" aria-label="טקסט לעריכה"></textarea>
+        <textarea id="cmpText" dir="rtl" lang="he" spellcheck="true" autocomplete="off" aria-label="טקסט לעריכה"></textarea>
         <div class="row"><button type="button" id="cmpRedo" hidden>ניסוח מחדש מהתמלול</button></div>
         <div class="status" id="cmpStatus"></div>
       </div>
@@ -553,6 +568,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
       <div class="row">
         <button type="button" id="btnListModels">טעינת המודלים מהחשבון</button>
         <button type="button" id="btnTestKey">בדיקת חיבור</button>
+        <button type="button" id="btnCheckAll">בדיקת כל המודלים</button>
       </div>
       <div class="status" id="connStatus"></div>
     </div>
@@ -752,7 +768,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     </div>
   </details>
   
-    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.4</p>
+    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.5</p>
   </section>
 </div>
 
@@ -886,14 +902,16 @@ async function gemini(contents, signal, opt) {
     try { onAttempt && onAttempt(primary, i); return await geminiOnce(primary, contents, signal, opt); }
     catch (e) {
       lastErr = e;
-      if (e.name === "AbortError" || !e.retryable) throw e;
+      if (e.name === "AbortError") throw e;
+      if (!e.retryable) { if (e.fallbackOk) break; throw e; }
       if (i < tries) await sleep(1500 * Math.pow(2, i), signal);
     }
   }
   if (fb && fb !== primary) {
     onAttempt && onAttempt(fb, -1);
     const r = await geminiOnce(fb, contents, signal, opt);
-    r.usedFallback = fb;
+    r.usedFallback = fb; r.primaryErr = lastErr;
+    noteModel(primary, lastErr.kind);
     return r;
   }
   throw lastErr;
@@ -913,7 +931,14 @@ async function geminiOnce(model, contents, signal, opt) {
     throw new Error("אין חיבור לאינטרנט, או שהשרת לא זמין. נסי שוב.");
   }
   const j = await res.json().catch(() => ({}));
-  if (!res.ok) { const er = new Error(explainError(res.status, j, model)); er.retryable = res.status === 503 || res.status === 429 || res.status === 500; throw er; }
+  if (!res.ok) {
+    const kind = errKind(res.status, j);
+    const er = new Error(explainError(res.status, j, model));
+    er.kind = kind; er.raw = (j.error && j.error.message) || "";
+    er.retryable = kind === "busy" || kind === "rate";
+    er.fallbackOk = er.retryable || ["paid", "daily", "missing", "denied"].includes(kind);
+    throw er;
+  }
   const c = (j.candidates || [])[0];
   if (!c) {
     const br = j.promptFeedback && j.promptFeedback.blockReason;
@@ -924,14 +949,30 @@ async function geminiOnce(model, contents, signal, opt) {
   return { text: stripFences(text), cut: c.finishReason === "MAX_TOKENS" };
 }
 function stripFences(t) { const m = t.match(/^```[a-z]*\n([\s\S]*?)\n```$/i); return m ? m[1].trim() : t; }
+function errKind(status, j) {
+  const msg = ((j.error && j.error.message) || "") + " " + JSON.stringify((j.error && j.error.details) || "");
+  if (status === 429) {
+    if (/limit:\s*0\b/.test(msg)) return "paid";             // no free quota at all for this model
+    if (/PerDay/i.test(msg)) return "daily";                   // free daily quota used up
+    return "rate";                                             // too many requests this minute
+  }
+  if (status === 404) return "missing";
+  if (status === 403) return "denied";
+  if (status >= 500) return "busy";
+  if (status === 400 && /api key/i.test(msg)) return "badkey";
+  return "error";
+}
 function explainError(status, j, model) {
   model = model || modelName();
   const msg = (j.error && j.error.message) || "";
+  const kind = errKind(status, j);
+  if (kind === "paid") return "המודל " + model + " לא כלול במכסה החינמית של גוגל. כדי להשתמש בו צריך להפעיל חיוב (Billing) על המפתח ב־AI Studio, או לבחור מודל Flash.";
+  if (kind === "daily") return "נגמרה המכסה החינמית היומית של " + model + ". היא מתחדשת פעם ביום. עד אז אפשר לבחור מודל אחר.";
   if (status === 400 && /api key/i.test(msg)) return "מפתח ה־API לא תקין. בדקי אותו בהגדרות.";
   if (status === 400 && /thinking/i.test(msg)) return "המודל לא תומך ברמת החשיבה שנבחרה. בהגדרות > מנוע, החזירי ל'ברירת מחדל'.";
   if (status === 403) return "למפתח אין הרשאה למודל הזה. בדקי את המפתח או בחרי מודל אחר.";
   if (status === 404) return "המודל \"" + model + "\" לא נמצא. בהגדרות לחצי 'טעינת רשימת מודלים' ובחרי אחד.";
-  if (status === 429) return "הגעת למכסת השימוש של ג'ימיני. חכי דקה ונסי שוב, או בחרי מודל flash-lite.";
+  if (status === 429) return "יותר מדי בקשות בדקה האחרונה ל־" + model + ". חכי דקה ונסי שוב.";
   if (status >= 500) return "השרת של ג'ימיני עמוס כרגע (" + status + ", " + model + "). נסי שוב עוד רגע, או בחרי מודל גיבוי אחר בהגדרות.";
   return "שגיאה " + status + ": " + msg.slice(0, 200);
 }
@@ -979,9 +1020,27 @@ function modelOptions() {
   [...KNOWN_MODELS, ...(S.modelList || []), S.model, S.fallbackModel].forEach(m => { m = (m || "").trim(); if (m && !all.includes(m)) all.push(m); });
   return all;
 }
+const STATUS_LABEL = { ok: "✓ ", paid: "", daily: "", rate: "", busy: "", missing: "", denied: "", timeout: "", net: "", error: "", badkey: "" };
+const STATUS_SUFFIX = { paid: " · בתשלום בלבד", daily: " · נגמרה המכסה היומית", missing: " · לא קיים", denied: " · אין הרשאה", busy: " · עמוס", timeout: " · איטי מדי", error: " · שגיאה" };
+function noteModel(m, st) { if (!m || !st) return; S.modelStatus = S.modelStatus || {}; S.modelStatus[m] = { st, at: Date.now() }; saveSettings(); renderModelPickers(); }
+function modelLabel(m) {
+  const x = (S.modelStatus || {})[m]; if (!x) return m;
+  return (STATUS_LABEL[x.st] || "") + m + (STATUS_SUFFIX[x.st] || "");
+}
+async function pingModel(m, secs) {
+  const ac = new AbortController(); const t = setTimeout(() => ac.abort(), secs * 1000); const t0 = Date.now();
+  try {
+    const r = await fetch(apiBase() + "models/" + encodeURIComponent(m) + ":generateContent", { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey.trim() }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "ענה במילה אחת: כן" }] }] }) });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) return { st: "ok", ms: Date.now() - t0 };
+    return { st: errKind(r.status, j), msg: explainError(r.status, j, m), raw: (j.error && j.error.message) || "", ms: Date.now() - t0 };
+  } catch (e) {
+    return e.name === "AbortError" ? { st: "timeout", msg: "המודל " + m + " לא ענה תוך " + secs + " שניות.", ms: Date.now() - t0 } : { st: "net", msg: "אין חיבור לאינטרנט." };
+  } finally { clearTimeout(t); }
+}
 function renderModelPickers() {
   const opts = modelOptions();
-  const html = (cur) => opts.map(m => '<option value="' + esc(m) + '"' + (m === cur ? " selected" : "") + ">" + esc(m) + "</option>").join("") + '<option value="__other">אחר, להקליד שם...</option>';
+  const html = (cur) => opts.map(m => '<option value="' + esc(m) + '"' + (m === cur ? " selected" : "") + ">" + esc(modelLabel(m)) + "</option>").join("") + '<option value="__other">אחר, להקליד שם...</option>';
   $("modelSel").innerHTML = html(modelName());
   $("fallbackSel").innerHTML = '<option value=""' + (S.fallbackModel ? "" : " selected") + '>בלי גיבוי</option>' + html(S.fallbackModel);
   $("modelCustom").hidden = true;
@@ -1388,7 +1447,7 @@ async function run() {
   curId = it.id; factor = 1; renderRecipe(); stack.push("recipe");
   if (S.openCompare && (pics.length || source)) { stack.push("compare"); await openCompareView(true); }
   else show("recipe", "fwd");
-  toast(r.usedFallback ? "נשמר בספר (עם מודל הגיבוי)" : "נשמר בספר המתכונים. כדאי לבדוק מול המקור");
+  toast(r.usedFallback ? "נשמר עם מודל הגיבוי " + r.usedFallback + (r.primaryErr && r.primaryErr.kind === "paid" ? ", כי " + modelName() + " בתשלום בלבד" : "") : "נשמר בספר המתכונים. כדאי לבדוק מול המקור");
 }
 async function refine(id, instr) {
   const it = byId(id);
@@ -1443,9 +1502,24 @@ async function openCompareView(alreadyPushed) {
   }
   $("cmpSegSrc").hidden = !it.source;
   $("cmpRedo").hidden = true;
+  $("cmpTogglePhoto").hidden = !pics.length && !it.source;
+  setCmpPhoto(pics.length > 0 || !!it.source);
+  if (S.cmpSplit) $("cmp").style.setProperty("--split", S.cmpSplit + "%");
   setCmpZoom(1); setCmpMode("text");
   if (!alreadyPushed) stack.push("compare");
   show("compare", "fwd");
+}
+const EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+function setCmpPhoto(show) {
+  $("cmp").classList.toggle("nophoto", !show);
+  const b = $("cmpTogglePhoto");
+  b.innerHTML = show ? EYE_OFF : EYE;
+  b.setAttribute("aria-label", show ? "הסתרת הצילום" : "הצגת הצילום"); b.title = b.getAttribute("aria-label");
+}
+function setVVH() {
+  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  document.documentElement.style.setProperty("--vvh", Math.round(h) + "px");
 }
 function setCmpZoom(z) {
   cmpZoom = Math.min(4, Math.max(1, z));
@@ -1798,6 +1872,24 @@ function init() {
   $("cmpSegSrc").onclick = () => { saveCompare(true); setCmpMode("src"); };
   $("cmpSave").onclick = () => { saveCompare(false); back(); };
   $("cmpRedo").onclick = redoFromSource;
+  setVVH();
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", setVVH);
+  window.addEventListener("resize", setVVH);
+  $("cmpText").addEventListener("focus", () => { $("cmp").classList.add("typing"); setTimeout(() => window.scrollTo(0, 0), 300); });
+  $("cmpText").addEventListener("blur", () => $("cmp").classList.remove("typing"));
+  $("cmpTogglePhoto").onclick = () => setCmpPhoto($("cmp").classList.contains("nophoto"));
+  (() => {   // drag the handle to give the photo more or less room
+    const h = $("cmpHandle"); let drag = false;
+    h.addEventListener("pointerdown", (e) => { drag = true; h.setPointerCapture(e.pointerId); });
+    h.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const r = $("cmp").getBoundingClientRect();
+      const pct = Math.min(75, Math.max(15, (e.clientY - r.top) / r.height * 100));
+      $("cmp").style.setProperty("--split", pct.toFixed(1) + "%"); S.cmpSplit = Math.round(pct);
+    });
+    const end = () => { if (drag) { drag = false; saveSettings(); } };
+    h.addEventListener("pointerup", end); h.addEventListener("pointercancel", end);
+  })();
   $("btnCook").onclick = openCook;
   $("ckReset").onclick = () => { cook.st = { i: [], s: [] }; saveCookState(); renderCook(); window.scrollTo({ top: 0, behavior: "smooth" }); toast("מתחילים מחדש"); };
   $("ckNote").onclick = () => { back(); setTimeout(() => { $("rNotes").focus(); $("rNotes").scrollIntoView({ block: "center", behavior: "smooth" }); }, 400); };
@@ -1823,14 +1915,35 @@ function init() {
     $("s_apiKey").value = t; $("s_apiKey").dispatchEvent(new Event("input")); toast("המפתח הודבק");
   };
   $("btnTestKey").onclick = async () => {
-    const st = $("connStatus"); setStatus(st, '<span class="spin"></span> בודקת...');
-    try {
-      const ac = withTimeout();
-      const r = await fetch(apiBase() + "models/" + encodeURIComponent(modelName()) + ":generateContent", { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey.trim() }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "ענה במילה אחת: עובד" }] }] }) });
-      ac.clear();
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok) setStatus(st, esc(explainError(r.status, j)), true); else setStatus(st, "החיבור עובד עם " + esc(modelName()) + ".");
-    } catch (e) { setStatus(st, "אין חיבור לאינטרנט.", true); }
+    const st = $("connStatus");
+    if (!S.apiKey.trim()) { setStatus(st, "קודם מדביקים מפתח.", true); return; }
+    const m = modelName();
+    setStatus(st, '<span class="spin"></span> בודקת את ' + esc(m) + "... מודלים חזקים יכולים לקחת עד חצי דקה.");
+    const r = await pingModel(m, 60);
+    if (r.st !== "net") noteModel(m, r.st);
+    if (r.st === "ok") { setStatus(st, "החיבור עובד עם " + esc(m) + " (" + (r.ms / 1000).toFixed(1) + " שניות)."); return; }
+    setStatus(st, esc(r.msg) + (r.raw ? '<details><summary>הפירוט מגוגל</summary><span class="ltr" style="display:block;font-weight:400">' + esc(r.raw.slice(0, 600)) + "</span></details>" : ""), true);
+  };
+  $("btnCheckAll").onclick = async () => {
+    const st = $("connStatus");
+    if (!S.apiKey.trim()) { setStatus(st, "קודם מדביקים מפתח.", true); return; }
+    const list = modelOptions();
+    const res = {};
+    $("btnCheckAll").disabled = true;
+    for (let i = 0; i < list.length; i++) {
+      setStatus(st, '<span class="spin"></span> בודקת ' + (i + 1) + " מתוך " + list.length + ": " + esc(list[i]));
+      const r = await pingModel(list[i], 40);
+      if (r.st === "net") { setStatus(st, "אין חיבור לאינטרנט.", true); $("btnCheckAll").disabled = false; return; }
+      res[list[i]] = r.st;
+      S.modelStatus = S.modelStatus || {}; S.modelStatus[list[i]] = { st: r.st, at: Date.now() };
+    }
+    saveSettings(); renderModelPickers(); $("btnCheckAll").disabled = false;
+    const ok = list.filter(m => res[m] === "ok"), paid = list.filter(m => res[m] === "paid");
+    const other = list.filter(m => res[m] !== "ok" && res[m] !== "paid");
+    setStatus(st, "עובדים עם המפתח הזה: " + (ok.length ? esc(ok.join(", ")) : "אף אחד") +
+      (paid.length ? "<br>בתשלום בלבד: " + esc(paid.join(", ")) : "") +
+      (other.length ? "<br>לא זמינים כרגע: " + esc(other.map(m => m + (STATUS_SUFFIX[res[m]] || "")).join(", ")) : "") +
+      "<br>הסימונים מופיעים עכשיו ברשימות הבחירה.", !ok.length);
   };
   $("btnListModels").onclick = async () => {
     const st = $("connStatus");
