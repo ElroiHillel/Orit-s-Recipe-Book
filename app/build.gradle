@@ -10,8 +10,8 @@ android {
         applicationId 'com.matkonit.app'
         minSdk 26
         targetSdk 34
-        versionCode 6
-        versionName '1.5'
+        versionCode 7
+        versionName '1.6'
     }
 
     // A fixed key in the repo so every build can install as an update over the previous one

@@ -1,6 +1,7 @@
 package com.matkonit.app;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
@@ -8,6 +9,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.text.InputType;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -315,7 +331,195 @@ public class MainActivity extends Activity {
 
     // ---------------------------------------------------------------- JS bridge
 
+    // ---------------------------------------------------------------- native text editor
+    // A plain Android EditText in a full-screen dialog. Works with every keyboard (SwiftKey included),
+    // which the WebView textarea did not. Shows the source photos above the text when given.
+
+    private int dp(float v) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, getResources().getDisplayMetrics()));
+    }
+
+    private static int color(JSONObject o, String key, int def) {
+        try { return Color.parseColor(o.optString(key, "").trim()); } catch (Exception e) { return def; }
+    }
+
+    private static GradientDrawable rounded(int fill, int stroke, int radius, int strokeW) {
+        GradientDrawable g = new GradientDrawable();
+        g.setColor(fill);
+        g.setCornerRadius(radius);
+        if (strokeW > 0) g.setStroke(strokeW, stroke);
+        return g;
+    }
+
+    private Bitmap decodeDataUrl(String url, int maxW) {
+        try {
+            byte[] bytes = Base64.decode(url.substring(url.indexOf(',') + 1), Base64.DEFAULT);
+            BitmapFactory.Options b = new BitmapFactory.Options();
+            b.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.length, b);
+            int sample = 1;
+            while (b.outWidth / (sample * 2) >= maxW) sample *= 2;
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inSampleSize = sample;
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, o);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void sendEditResult(String reqId, String text) {
+        String js = "window.onNativeEdit && window.onNativeEdit(" + JSONObject.quote(reqId) + "," + (text == null ? "null" : JSONObject.quote(text)) + ")";
+        web.evaluateJavascript(js, null);
+    }
+
+    private void showNativeEditor(String reqId, String optsJson) {
+        JSONObject o;
+        try { o = new JSONObject(optsJson); } catch (Exception e) { sendEditResult(reqId, null); return; }
+        final int bg = color(o, "bg", Color.WHITE), surface = color(o, "surface", Color.WHITE), ink = color(o, "ink", Color.BLACK);
+        final int muted = color(o, "muted", Color.GRAY), accent = color(o, "accent", 0xFFD9577A), accentInk = color(o, "accentInk", Color.WHITE), line = color(o, "line", Color.LTGRAY);
+        final float fs = (float) o.optDouble("fs", 16);
+
+        final Dialog d = new Dialog(this, android.R.style.Theme_Material_Light_NoActionBar);
+        final boolean[] answered = {false};
+
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setBackgroundColor(bg);
+        root.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        root.setPadding(dp(12), dp(8), dp(12), dp(12));
+
+        // top bar: title, zoom (when there is a photo), cancel, save
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        TextView title = new TextView(this);
+        title.setText(o.optString("title", ""));
+        title.setTextColor(ink);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        title.setSingleLine(true);
+        bar.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        final EditText et = new EditText(this);
+
+        JSONArray imgs = o.optJSONArray("images");
+        final LinearLayout imgCol = new LinearLayout(this);
+        imgCol.setOrientation(LinearLayout.VERTICAL);
+        final float[] zoom = {1f};
+        final int screenW = getResources().getDisplayMetrics().widthPixels - dp(24);
+        boolean hasImages = false;
+        if (imgs != null) {
+            for (int i = 0; i < imgs.length(); i++) {
+                Bitmap bm = decodeDataUrl(imgs.optString(i, ""), 2000);
+                if (bm == null) continue;
+                ImageView iv = new ImageView(this);
+                iv.setImageBitmap(bm);
+                iv.setAdjustViewBounds(true);
+                iv.setScaleType(ImageView.ScaleType.FIT_START);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(screenW, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.bottomMargin = dp(6);
+                imgCol.addView(iv, lp);
+                hasImages = true;
+            }
+        }
+        if (hasImages) {
+            String[] labels = {"−", "+"};
+            float[] steps = {-0.5f, 0.5f};
+            for (int k = 0; k < 2; k++) {
+                final float step = steps[k];
+                Button z = new Button(this, null, android.R.attr.borderlessButtonStyle);
+                z.setText(labels[k]);
+                z.setTextColor(accent);
+                z.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+                z.setMinWidth(0); z.setMinimumWidth(0);
+                z.setPadding(dp(10), 0, dp(10), 0);
+                z.setOnClickListener(v -> {
+                    zoom[0] = Math.max(1f, Math.min(4f, zoom[0] + step));
+                    for (int c = 0; c < imgCol.getChildCount(); c++) {
+                        View child = imgCol.getChildAt(c);
+                        ViewGroup.LayoutParams lp = child.getLayoutParams();
+                        lp.width = Math.round(screenW * zoom[0]);
+                        child.setLayoutParams(lp);
+                    }
+                });
+                bar.addView(z, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(44)));
+            }
+        }
+
+        Button cancel = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        cancel.setText(o.optString("cancel", "ביטול"));
+        cancel.setTextColor(muted);
+        cancel.setAllCaps(false);
+        bar.addView(cancel, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(44)));
+
+        Button save = new Button(this, null, android.R.attr.borderlessButtonStyle);
+        save.setText(o.optString("save", "שמירה"));
+        save.setTextColor(accentInk);
+        save.setAllCaps(false);
+        save.setTypeface(Typeface.DEFAULT_BOLD);
+        save.setBackground(rounded(accent, accent, dp(22), 0));
+        save.setPadding(dp(18), 0, dp(18), 0);
+        LinearLayout.LayoutParams saveLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(44));
+        saveLp.setMarginStart(dp(6));
+        bar.addView(save, saveLp);
+        root.addView(bar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        if (hasImages) {
+            ScrollView vs = new ScrollView(this);
+            HorizontalScrollView hs = new HorizontalScrollView(this);
+            hs.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            hs.addView(imgCol);
+            vs.addView(hs);
+            vs.setBackground(rounded(surface, line, dp(14), dp(1)));
+            vs.setPadding(dp(6), dp(6), dp(6), dp(6));
+            LinearLayout.LayoutParams vlp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0.42f);
+            vlp.topMargin = dp(8);
+            root.addView(vs, vlp);
+        }
+
+        et.setText(o.optString("text", ""));
+        et.setHint(o.optString("hint", ""));
+        et.setHintTextColor(muted);
+        et.setTextColor(ink);
+        et.setTextSize(TypedValue.COMPLEX_UNIT_SP, fs);
+        et.setLineSpacing(0, 1.25f);
+        et.setGravity(Gravity.TOP | Gravity.START);
+        et.setTextDirection(View.TEXT_DIRECTION_FIRST_STRONG_RTL);
+        et.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        et.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        et.setSingleLine(false);
+        et.setHorizontallyScrolling(false);
+        et.setVerticalScrollBarEnabled(true);
+        et.setBackground(rounded(surface, line, dp(14), dp(1)));
+        et.setPadding(dp(14), dp(12), dp(14), dp(12));
+        LinearLayout.LayoutParams elp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, hasImages ? 0.58f : 1f);
+        elp.topMargin = dp(8);
+        root.addView(et, elp);
+
+        cancel.setOnClickListener(v -> { answered[0] = true; sendEditResult(reqId, null); d.dismiss(); });
+        save.setOnClickListener(v -> { answered[0] = true; sendEditResult(reqId, et.getText().toString()); d.dismiss(); });
+        // The back button keeps what was typed, like most note apps.
+        d.setOnDismissListener(di -> { if (!answered[0]) { answered[0] = true; sendEditResult(reqId, et.getText().toString()); } });
+
+        d.setContentView(root);
+        if (d.getWindow() != null) {
+            d.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            d.getWindow().setStatusBarColor(bg);
+        }
+        d.show();
+        et.requestFocus();
+        et.setSelection(et.getText().length());
+    }
+
     private class Bridge {
+        @JavascriptInterface
+        public void editText(String reqId, String optsJson) {
+            runOnUiThread(() -> showNativeEditor(reqId, optsJson));
+        }
+
         @JavascriptInterface
         public void keepAwake(boolean on) {
             runOnUiThread(() -> {

@@ -60,7 +60,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px),
     var(--paper);
   box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(0,0,0,.35);
-  perspective: 1600px;
 }
 .book::before { /* spine shadow on the right (binding side in RTL) */
   content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 22px; pointer-events: none; z-index: 1;
@@ -95,10 +94,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @keyframes glow { 50% { transform: rotate(20deg) scale(1.1); } }
 
 /* ---- views ---- */
-.view { position: relative; z-index: 2; padding-block: 6px 120px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(26px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 16px; transform-origin: right center; backface-visibility: hidden; }
-.view.enter { animation: pageIn .55s cubic-bezier(.2,.75,.25,1) both; }
-.view.back-enter { animation: pageBack .45s cubic-bezier(.2,.75,.25,1) both; }
-@keyframes pageIn { from { transform: rotateY(-62deg); opacity: .35; box-shadow: -40px 0 60px -20px rgba(0,0,0,.4); } to { transform: none; opacity: 1; } }
+.view { position: relative; z-index: 2; padding-block: 6px 120px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(26px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 16px; transform-origin: right center; }
+.view.enter { animation: pageIn .55s cubic-bezier(.2,.75,.25,1) backwards; }
+.view.back-enter { animation: pageBack .45s cubic-bezier(.2,.75,.25,1) backwards; }
+@keyframes pageIn { from { transform: perspective(1600px) rotateY(-62deg); opacity: .35; box-shadow: -40px 0 60px -20px rgba(0,0,0,.4); } to { transform: none; opacity: 1; } }
 @keyframes pageBack { from { transform: translateX(-24px); opacity: .4; } to { transform: none; opacity: 1; } }
 
 h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; text-wrap: balance; }
@@ -307,6 +306,8 @@ label.fld small, div.fld small, .hint { font-weight: 400; color: var(--muted); f
 button.primary.sm { padding: 8px 18px; font-size: .95em; }
 #cmpTogglePhoto { color: var(--accent); }
 .cmp.typing #cmpHint { display: none; }
+textarea.native-ed { cursor: pointer; caret-color: transparent; }
+textarea.native-ed:focus { border-color: var(--line); }
 #cmpText { flex: 1 1 auto; min-height: 90px; resize: none; font-size: .95em; }
 @media (min-width: 720px) {
   .cmp { flex-direction: row; gap: 14px; }
@@ -584,6 +585,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
           <option value="en">אנגלית</option>
         </select>
       </label>
+      <div class="toggle" id="nativeEdRow"><span>עריכת טקסט בעורך של הטלפון (פותר בעיות הקלדה במקלדות כמו SwiftKey)</span><input type="checkbox" data-key="nativeEditor" id="s_nativeEditor"></div>
       <div class="toggle"><span>תמלול מדויק לפני הניסוח (שני שלבים, מומלץ לצילומים)</span><input type="checkbox" data-key="twoStage" id="s_twoStage"></div>
       <div class="toggle"><span>פתיחת מסך בדיקה מול המקור אחרי כל המרה</span><input type="checkbox" data-key="openCompare" id="s_openCompare"></div>
       <label class="fld">כמה להיצמד למקור
@@ -768,7 +770,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--font-body); font-size: .8
     </div>
   </details>
   
-    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.5</p>
+    <p class="hint" style="text-align:center">ספר המתכונים של אורית 1.6</p>
   </section>
 </div>
 
@@ -815,7 +817,7 @@ const DEFAULTS = {
   customPromptOn: false, customPrompt: "",
   exportFormat: "txt", fileNamePattern: "{title}", autoSave: true, autoRunShare: true, sharePlain: false,
   theme: "system", palette: "rose", fontSize: 16, editorDefault: "preview",
-  fallbackModel: "gemini-3.5-flash-lite", retries: "2", modelList: [], keepAwake: false, twoStage: true, openCompare: true, v: 3
+  fallbackModel: "gemini-3.5-flash-lite", retries: "2", modelList: [], keepAwake: false, twoStage: true, openCompare: true, nativeEditor: true, v: 3
 };
 
 const SAMPLE = `# שקשוקה ביתית
@@ -1242,7 +1244,12 @@ function show(v, dir) {
   VIEWS.forEach(n => $("v-" + n).hidden = n !== v);
   const el = $("v-" + v);
   el.classList.remove("enter", "back-enter"); void el.offsetWidth;
-  if (dir) el.classList.add(dir === "back" ? "back-enter" : "enter");
+  if (dir) {
+    el.classList.add(dir === "back" ? "back-enter" : "enter");
+    const done = (e) => { if (e.target !== el) return; el.classList.remove("enter", "back-enter"); el.removeEventListener("animationend", done); };
+    el.addEventListener("animationend", done);
+    setTimeout(() => el.classList.remove("enter", "back-enter"), 900);   // also if animations are off
+  }
   const home = v === "book";
   $("tbMenu").hidden = !home; $("tbBack").hidden = home;
   $("tbDots").hidden = v !== "recipe";
@@ -1533,7 +1540,7 @@ function setCmpMode(m) {
   $("cmpSegText").setAttribute("aria-pressed", m === "text");
   $("cmpSegSrc").setAttribute("aria-pressed", m === "src");
   $("cmpRedo").hidden = m !== "src";
-  $("cmpHint").textContent = m === "text" ? "המתכון כפי שנשמר. אפשר לתקן כאן ישירות מול הצילום." : "התמלול של ג'ימיני מהצילום. תקני כאן טעויות קריאה, ואז 'ניסוח מחדש' יבנה את המתכון מהתמלול המתוקן.";
+  $("cmpHint").textContent = useNativeEditor() ? (m === "text" ? "לחצי על הטקסט כדי לתקן אותו, עם הצילום מעליו." : "לחצי על התמלול כדי לתקן טעויות קריאה, ואז 'ניסוח מחדש'.") : m === "text" ? "המתכון כפי שנשמר. אפשר לתקן כאן ישירות מול הצילום." : "התמלול של ג'ימיני מהצילום. תקני כאן טעויות קריאה, ואז 'ניסוח מחדש' יבנה את המתכון מהתמלול המתוקן.";
 }
 function saveCompare(silent) {
   const it = byId(curId); if (!it) return;
@@ -1763,6 +1770,51 @@ function exportAs(text, fmt) {
   }
 }
 
+/* ---------------- native text editor (Android) ----------------
+   Some keyboards (Microsoft SwiftKey) fail to type into web text boxes inside the app.
+   On Android the long text fields open the phone's own editor instead, which works with every keyboard. */
+const nativeEditCbs = {};
+window.onNativeEdit = (id, text) => { const cb = nativeEditCbs[id]; delete nativeEditCbs[id]; if (cb) cb(text); };
+function hasNativeEditor() { return !!(Native && Native.editText); }
+function useNativeEditor() { return hasNativeEditor() && S.nativeEditor !== false; }
+function nativeEdit(opts) {
+  return new Promise(ok => {
+    const id = "e" + Date.now() + Math.random().toString(36).slice(2, 6);
+    nativeEditCbs[id] = ok;
+    const cs = getComputedStyle(document.documentElement), c = (n) => cs.getPropertyValue(n).trim();
+    try {
+      Native.editText(id, JSON.stringify(Object.assign({ images: [], save: "שמירה", cancel: "ביטול" }, opts, {
+        bg: c("--paper"), surface: c("--surface"), ink: c("--ink"), muted: c("--muted"), accent: c("--accent"), accentInk: c("--accent-ink"), line: c("--line"), fs: Number(S.fontSize) || 16
+      })));
+    } catch (e) { delete nativeEditCbs[id]; ok(null); }
+  });
+}
+const NATIVE_FIELDS = {
+  cmpText: { title: () => cmpMode === "text" ? "תיקון המתכון מול הצילום" : "תיקון התמלול מול הצילום", images: async () => { const it = byId(curId); return it && it.hasImages ? (await IDB.get(it.id)) || [] : []; }, after: () => { saveCompare(true); toast("נשמר"); } },
+  editText: { title: () => editId ? "עריכת מתכון" : "מתכון חדש", after: () => { if (!$("editPreview").hidden) setEditMode("preview"); } },
+  rNotes: { title: () => "ההערות שלי", hint: "למשל: בפעם הבאה פחות סוכר", after: () => { const it = byId(curId); if (it) { it.notes = $("rNotes").value; saveBook(); } } },
+  srcText: { title: () => "טקסט המתכון", hint: "הדביקי או כתבי כאן את המתכון" }
+};
+function wireNativeFields() {
+  Object.keys(NATIVE_FIELDS).forEach(fid => {
+    const ta = $(fid), cfg = NATIVE_FIELDS[fid];
+    ta.readOnly = useNativeEditor();
+    ta.classList.toggle("native-ed", useNativeEditor());
+    if (ta.dataset.wired) return;
+    ta.dataset.wired = "1";
+    ta.addEventListener("click", async () => {
+      if (!useNativeEditor() || ta.dataset.busy) return;
+      ta.dataset.busy = "1";
+      const images = cfg.images ? await cfg.images() : [];
+      const text = await nativeEdit({ title: cfg.title(), text: ta.value, hint: cfg.hint || "", images });
+      delete ta.dataset.busy;
+      if (text == null || text === ta.value) return;
+      ta.value = text;
+      if (cfg.after) cfg.after();
+    });
+  });
+}
+
 /* ---------------- keep screen on ---------------- */
 let wakeLock = null;
 let cookAwake = false;   // cooking mode keeps the screen on even if the toggle is off
@@ -1807,6 +1859,7 @@ function bindSettings() {
       const o = $("o_" + k); if (o) o.textContent = fmtOut(k, v);
       if (k === "customPromptOn") $("customPromptWrap").hidden = !v;
       if (k === "theme" || k === "fontSize") applyTheme();
+      if (k === "nativeEditor") wireNativeFields();
       refreshDerived();
     });
   });
@@ -1872,6 +1925,8 @@ function init() {
   $("cmpSegSrc").onclick = () => { saveCompare(true); setCmpMode("src"); };
   $("cmpSave").onclick = () => { saveCompare(false); back(); };
   $("cmpRedo").onclick = redoFromSource;
+  $("nativeEdRow").hidden = !hasNativeEditor();
+  wireNativeFields();
   setVVH();
   if (window.visualViewport) window.visualViewport.addEventListener("resize", setVVH);
   window.addEventListener("resize", setVVH);
